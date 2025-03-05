@@ -19,9 +19,9 @@ async function insertAfterSentenceCountWithFetch(
 
     // Extract required fields from the response
     const productImage =
-      data.items[2].productImage || "https://via.placeholder.com/150"; // Default image
-    const productTitle = data.items[2].productTitle || "Default Title";
-    const productLink = data.items[2].link || "#";
+      data.items[0].productImage || "https://via.placeholder.com/150"; // Default image
+    const productTitle = data.items[0].productTitle || "Default Title";
+    const productLink = data.items[0].link || "#";
 
     // Create the HTML content dynamically
     const htmlContent = `
@@ -47,13 +47,13 @@ async function insertAfterSentenceCountWithFetch(
     const sentences = originalContent.split(/([.?!]+)/);
 
     // Check if there are enough sentences
-    if (sentences.length / 2 < Number(data.items[2].position)) {
+    if (sentences.length / 2 < Number(data.items[0].position)) {
       console.warn("Paragraph does not contain enough sentences.");
       return;
     }
 
     // Find the index after the specified sentence count
-    const insertionIndex = Number(data.items[2].position) * 2; // Each sentence has text + delimiter
+    const insertionIndex = Number(data.items[0].position) * 2; // Each sentence has text + delimiter
 
     // Insert the HTML content after the specified sentence
     sentences.splice(insertionIndex, 0, htmlContent);
@@ -69,5 +69,5 @@ async function insertAfterSentenceCountWithFetch(
 insertAfterSentenceCountWithFetch(
   "article-template__content",
   8,
-  "http://localhost:51205/api/items", // Replace with your API endpoint
+  "http://localhost:3301/api/items", // Replace with your API endpoint
 );

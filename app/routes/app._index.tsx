@@ -36,6 +36,21 @@ export const loader = async ({ request }: any) => {
 };
 export const action = async ({ request }: any) => {
   const body = await request.formData();
+  if (request.method == "DELETE") {
+    try {
+      const updatedReview = await prisma.item.delete({
+        where: { id: body.get("id") },
+      });
+
+      const response = json({
+        message: "Review is deleted",
+      });
+      return await cors(request, response);
+    } catch (error) {
+      console.error("Error updating review:", error);
+      throw new Error("Could not approve the review.");
+    }
+  }
 };
 export default function Index() {
   const { reviews } = useLoaderData<typeof loader>();
@@ -45,7 +60,7 @@ export default function Index() {
       <Page fullWidth>
         <LegacyCard sectioned>
           <EmptyState
-            heading="No reviews found!"
+            heading="No Item Found!"
             image="https://cdn.shopify.com/s/files/1/0262/4071/2726/files/emptystate-files.png"
           ></EmptyState>
         </LegacyCard>

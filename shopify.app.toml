@@ -1,7 +1,7 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
 client_id = "fc69044270e65a6f15dfefb9fca0a4e6"
-application_url = "https://enormous-daisy-np-sleeps.trycloudflare.com"
+application_url = "https://membership-are-hobby-lounge.trycloudflare.com"
 embedded = true
 name = "marketing-cta"
 handle = "marketing-cta"
@@ -27,9 +27,9 @@ scopes = "write_products"
 
 [auth]
 redirect_urls = [
-  "https://enormous-daisy-np-sleeps.trycloudflare.com/auth/callback",
-  "https://enormous-daisy-np-sleeps.trycloudflare.com/auth/shopify/callback",
-  "https://enormous-daisy-np-sleeps.trycloudflare.com/api/auth/callback"
+  "https://membership-are-hobby-lounge.trycloudflare.com/auth/callback",
+  "https://membership-are-hobby-lounge.trycloudflare.com/auth/shopify/callback",
+  "https://membership-are-hobby-lounge.trycloudflare.com/api/auth/callback"
 ]
 
 [pos]

@@ -1,10 +1,13 @@
 import { useState, useEffect } from "react";
 import { Form, useNavigate, useNavigation, useSubmit } from "@remix-run/react";
 import {
+  BlockStack,
   Button,
   Card,
   FormLayout,
+  InlineGrid,
   Page,
+  RadioButton,
   Select,
   TextField,
 } from "@shopify/polaris";
@@ -88,9 +91,11 @@ export default function CategorySelector() {
   const [productTitle, setProductTitle] = useState("");
   const [producthandle, setProductHandle] = useState("");
   const [position, setPosition] = useState("5");
+  const [layout, setLayout] = useState("1");
 
   const navigation = useNavigation();
   const navigate = useNavigate();
+
   useEffect(() => {
     console.log("Navigation state:", navigation.state);
     if (navigation.state === "submitting") {
@@ -150,13 +155,95 @@ export default function CategorySelector() {
         <Form method="post">
           <br />
           <FormLayout>
+            <Card>
+              <InlineGrid gap="400" columns={3}>
+                <div style={{ textAlign: "center" }}>
+                  <label htmlFor="layoutOne">
+                    <img
+                      src="/assets/images/01.jpg"
+                      alt="image"
+                      style={{
+                        width: "100%",
+                        height: "150px",
+                        borderRadius: "8px",
+                        cursor: "pointer",
+                        objectFit: "contain",
+                        border: "1px solid #ccc",
+                      }}
+                    />
+                  </label>
+                  <RadioButton
+                    label="Layout One"
+                    id="layoutOne"
+                    name="layout"
+                    checked={layout == "1" ? true : false}
+                    onChange={() => {
+                      setLayout("1");
+                    }}
+                  />
+                </div>
+
+                <div style={{ textAlign: "center" }}>
+                  <label htmlFor="layoutTwo">
+                    <img
+                      src="/assets/images/02.jpg"
+                      alt="image"
+                      style={{
+                        width: "100%",
+                        height: "150px",
+                        borderRadius: "8px",
+                        cursor: "pointer",
+                        objectFit: "contain",
+                        border: "1px solid #ccc",
+                      }}
+                    />
+                  </label>
+                  <RadioButton
+                    label="Layout Two"
+                    id="layoutTwo"
+                    name="layout"
+                    checked={layout == "2" ? true : false}
+                    onChange={() => {
+                      setLayout("2");
+                    }}
+                  />
+                </div>
+
+                <div style={{ textAlign: "center" }}>
+                  <label htmlFor="layoutThree">
+                    <img
+                      src="/assets/images/03.jpg"
+                      alt="image"
+                      style={{
+                        width: "100%",
+                        height: "150px",
+                        borderRadius: "8px",
+                        cursor: "pointer",
+                        objectFit: "contain",
+                        border: "1px solid #ccc",
+                      }}
+                    />
+                  </label>
+                  <RadioButton
+                    label="Layout Three"
+                    id="layoutThree"
+                    name="layout"
+                    checked={layout == "3" ? true : false}
+                    onChange={() => {
+                      setLayout("3");
+                    }}
+                  />
+                </div>
+              </InlineGrid>
+            </Card>
             <TextField
-              label="CTA Name"
+              label="Heading"
               onChange={(value) => {
                 setTitleValue(value);
               }}
               value={titleValue}
               name="title"
+              placeholder="Enter the heading"
               autoComplete="off"
             />
             <TextField

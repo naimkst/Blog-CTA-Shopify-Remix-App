@@ -44,14 +44,20 @@ model Product {
 }
 
 model Item {
-  id           String   @id
-  title        String
-  productId    String
-  productImage String?
-  productTitle String
-  blogId       String
-  position     String
-  productSlug  String? // ✅ Add this field
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id          String   @id
+  headline    String
+  description String?
+  productId   String
+  blogId      String
+  position    String
+  categoryId  String?
+  productsId  String?
+  layout      String
+  shop        String
+  thumbnail   String?
+  buttonLink  String?
+  buttonText  String?
+  productSlug String? // ✅ Add this field
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
