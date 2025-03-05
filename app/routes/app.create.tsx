@@ -86,7 +86,8 @@ export default function CategorySelector() {
   const [selectArticle, setSelectArticle] = useState<any>(null);
   const [selectBlog, setSelectBlog] = useState<any>(null);
   const [selectedCategory, setSelectedCategory] = useState<any>(null);
-  const [titleValue, setTitleValue] = useState("");
+  const [headline, setHeadline] = useState("");
+  const [description, setDescription] = useState("");
   const [productImage, setProductImage] = useState("");
   const [productTitle, setProductTitle] = useState("");
   const [producthandle, setProductHandle] = useState("");
@@ -149,14 +150,14 @@ export default function CategorySelector() {
   };
 
   return (
-    <Page title="Category Selector">
+    <Page title="Create Marketing Entry">
       <ToastContainer />
       <Card roundedAbove="sm">
         <Form method="post">
           <br />
           <FormLayout>
             <Card>
-              <InlineGrid gap="400" columns={3}>
+              <InlineGrid gap="400" columns={4}>
                 <div style={{ textAlign: "center" }}>
                   <label htmlFor="layoutOne">
                     <img
@@ -164,16 +165,16 @@ export default function CategorySelector() {
                       alt="image"
                       style={{
                         width: "100%",
-                        height: "150px",
+                        height: "120px",
                         borderRadius: "8px",
                         cursor: "pointer",
                         objectFit: "contain",
-                        border: "1px solid #ccc",
+                        border: "2px solid #ccc",
                       }}
                     />
                   </label>
                   <RadioButton
-                    label="Layout One"
+                    label="More than Specified"
                     id="layoutOne"
                     name="layout"
                     checked={layout == "1" ? true : false}
@@ -190,16 +191,16 @@ export default function CategorySelector() {
                       alt="image"
                       style={{
                         width: "100%",
-                        height: "150px",
+                        height: "120px",
                         borderRadius: "8px",
                         cursor: "pointer",
                         objectFit: "contain",
-                        border: "1px solid #ccc",
+                        border: "2px solid #ccc",
                       }}
                     />
                   </label>
                   <RadioButton
-                    label="Layout Two"
+                    label="Less than Specified"
                     id="layoutTwo"
                     name="layout"
                     checked={layout == "2" ? true : false}
@@ -216,17 +217,43 @@ export default function CategorySelector() {
                       alt="image"
                       style={{
                         width: "100%",
-                        height: "150px",
+                        height: "120px",
                         borderRadius: "8px",
                         cursor: "pointer",
                         objectFit: "contain",
-                        border: "1px solid #ccc",
+                        border: "2px solid #ccc",
                       }}
                     />
                   </label>
                   <RadioButton
-                    label="Layout Three"
+                    label="Image Right"
                     id="layoutThree"
+                    name="layout"
+                    checked={layout == "3" ? true : false}
+                    onChange={() => {
+                      setLayout("3");
+                    }}
+                  />
+                </div>
+
+                <div style={{ textAlign: "center" }}>
+                  <label htmlFor="layoutFour">
+                    <img
+                      src="/assets/images/04.jpg"
+                      alt="image"
+                      style={{
+                        width: "100%",
+                        height: "120px",
+                        borderRadius: "8px",
+                        cursor: "pointer",
+                        objectFit: "contain",
+                        border: "2px solid #ccc",
+                      }}
+                    />
+                  </label>
+                  <RadioButton
+                    label="Image Left"
+                    id="layoutFour"
                     name="layout"
                     checked={layout == "3" ? true : false}
                     onChange={() => {
@@ -239,15 +266,23 @@ export default function CategorySelector() {
             <TextField
               label="Heading"
               onChange={(value) => {
-                setTitleValue(value);
+                setHeadline(value);
               }}
-              value={titleValue}
-              name="title"
+              value={headline}
+              name="headline"
               placeholder="Enter the heading"
               autoComplete="off"
             />
             <TextField
-              label="Position"
+              label="Your Description"
+              onChange={(value) => setDescription(value)}
+              value={description}
+              placeholder="Enter the description"
+              multiline={4}
+              autoComplete="off"
+            />
+            <TextField
+              label="Item Position in the blog"
               onChange={(value) => {
                 setPosition(value);
               }}
