@@ -100,7 +100,7 @@ async function showData(paragraphClass, position, apiUrl) {
     console.log("Fetched Marketing data====:", data);
     let marketingData = data?.items[0];
 
-    console.log("Marketing Data:===", marketingData);
+    console.log("item dataaaaaaaa:===", data);
 
     // ❌ Fix: Use a different variable name instead of `fetch`
     const categoryResponse = await fetch(`${apiUrl}/categoryById`, {
@@ -124,7 +124,7 @@ async function showData(paragraphClass, position, apiUrl) {
     console.log("Fetched Data:===", products);
 
     // Create the HTML content dynamically
-    const htmlContent = `
+    const layout1 = `
       <section class="product-area">
         <div class="my-container-fluid">
           <div class="section-title">
@@ -157,6 +157,21 @@ async function showData(paragraphClass, position, apiUrl) {
       </section>
     `;
 
+    const layout2 = `
+    <h1>Layout Two</h1>
+    <h2>${marketingData?.headline}</h2>
+    <p>${marketingData?.description}</p>`;
+
+    const layout3 = `
+    <h1>Layout Three</h1>
+    <h2>${marketingData?.headline}</h2>
+    <p>${marketingData?.description}</p>`;
+
+    const layout4 = `
+    <h1>Layout Four</h1>
+    <h2>${marketingData?.headline}</h2>
+    <p>${marketingData?.description}</p>`;
+
     // Get the paragraph element by class name
     const paragraph = document.getElementsByClassName(paragraphClass)[0];
 
@@ -181,7 +196,20 @@ async function showData(paragraphClass, position, apiUrl) {
     const insertionIndex = Number(data.items[0]?.position) * 2;
 
     // Insert the HTML content after the specified sentence
-    sentences.splice(insertionIndex, 0, htmlContent);
+    const layout =
+      data.items[0]?.layout == "1"
+        ? layout1
+        : data.items[0]?.layout == "2"
+          ? layout2
+          : data.items[0]?.layout == "3"
+            ? layout3
+            : data.items[0]?.layout == "4"
+              ? layout4
+              : null; // Default case if no match
+
+    if (layout) {
+      sentences.splice(insertionIndex, 0, layout);
+    }
 
     // Join the sentences back and set it as the new content
     paragraph.innerHTML = sentences.join("");

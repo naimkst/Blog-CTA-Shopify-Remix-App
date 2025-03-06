@@ -30,7 +30,7 @@ export let action: ActionFunction = async ({ request }) => {
     // Extract values
     const headline = formData.get("headline")?.trim() || "";
     const description = formData.get("description")?.trim() || "";
-    const layout = formData.get("layout") || "1";
+    const layout = formData.get("layout");
     const categoryId = formData.get("categoryId");
     const productHandle = formData.get("productHandle");
     const thumbnail = formData.get("thumbnail");
@@ -315,7 +315,7 @@ export default function CategorySelector() {
                 </div>
 
                 <div style={{ textAlign: "center" }}>
-                  <label htmlFor="layoutFour">
+                  <label htmlFor="layout-four">
                     <img
                       src="/assets/images/04.jpg"
                       alt="image"
@@ -331,12 +331,13 @@ export default function CategorySelector() {
                   </label>
                   <RadioButton
                     label="Image Left"
-                    id="layoutFour"
+                    id="layout-four"
                     name="layout"
-                    checked={layout == "3" ? true : false}
+                    checked={layout == "4" ? true : false}
                     onChange={() => {
-                      setLayout("3");
+                      setLayout("4");
                     }}
+                    value={layout}
                   />
                 </div>
               </InlineGrid>
