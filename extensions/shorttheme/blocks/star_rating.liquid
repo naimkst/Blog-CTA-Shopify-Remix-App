@@ -1,8 +1,6 @@
 {{ 'owl.carousel.css' | asset_url | stylesheet_tag }}
 {{ 'owl.theme.css' | asset_url | stylesheet_tag }}
 {{ 'owl.transitions.css' | asset_url | stylesheet_tag }}
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
 {{ 'style.css' | asset_url | stylesheet_tag }}
 
 <input type="hidden" id="blogId" value="{{ article.id }}" />
@@ -18,11 +16,11 @@
 {% endif %}
 
 
-<script src="{{ 'jquery.min.js' | asset_url }}" async></script>
-<script src="{{ 'jquery-plugin-collection.js' | asset_url }}" async></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" defer></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js" defer></script>
-<script src="{{ 'script.js' | asset_url }}" async></script>
+<script src="{{ 'jquery.min.js' | asset_url }}" defer></script>
+{% comment %} <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" defer></script> {% endcomment %}
+{% comment %} <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js" defer></script> {% endcomment %}
+<script src="{{ 'jquery-plugin-collection.js' | asset_url }}" defer></script>
+<script src="{{ 'script.js' | asset_url }}" defer></script>
 
 {% schema %}
 {

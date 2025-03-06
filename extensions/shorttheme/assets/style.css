@@ -37,7 +37,7 @@ body {
 
 .my-container-fluid {
   padding-left: 15px;
-  padding-right: 0;
+  padding-right: 15px;
 }
 @media (max-width: 991px) {
   .my-container-fluid {
@@ -62,8 +62,11 @@ body {
 }
 
 .product-area {
-  padding-bottom: 110px;
+  padding: 50px 0px;
   overflow: hidden;
+  background: #f9f9f9;
+  border-radius: 10px;
+  margin: 50px 0px;
 }
 @media (max-width: 767px) {
   .product-area {
@@ -91,7 +94,7 @@ body {
   border-radius: 5px;
 }
 .product-area .product-tab .tab-link.active {
-  background-color: #FBDE7D;
+  background-color: #fbde7d;
 }
 
 .product-wrap .product-item {
@@ -108,6 +111,8 @@ body {
   max-width: 100%;
   transition: all 0.3s;
   transform: scale(1);
+  height: 180px;
+  object-fit: cover;
 }
 .product-wrap .product-item .product-img .offer-thumb {
   position: absolute;
@@ -128,21 +133,24 @@ body {
   font-family: "Inter";
 }
 .product-wrap .product-item .product-text h2 {
-  margin-top: 15px;
+  margin-top: 5px;
   margin-bottom: 0;
   font-family: "Inter";
+  text-align: center;
+  line-height: 14px;
 }
 .product-wrap .product-item .product-text h2 a {
-  font-size: 20px;
+  font-size: 13px;
   text-decoration: none;
   color: #000;
+  font-weight: 300;
 }
 .product-wrap .product-item:hover .product-img img {
   transform: scale(1.2);
 }
 .product-wrap .owl-nav button.owl-next {
   left: auto;
-  right: 250px;
+  right: -10px;
   transform: translateY(-50%);
 }
 @media (max-width: 991px) {
@@ -157,7 +165,7 @@ body {
 }
 .product-wrap .owl-nav button {
   position: absolute;
-  left: 50px;
+  left: -10px;
   top: 50%;
   transform: translateY(-50%);
   text-align: center;
@@ -196,9 +204,9 @@ body {
 
 .section-title {
   text-align: center;
-  max-width: 600px;
+  max-width: 100%;
   margin: 0 auto;
-  margin-bottom: 50px;
+  margin-bottom: 36px;
 }
 .section-title h2 {
   font-size: 35px;
@@ -217,9 +225,9 @@ body {
   line-height: 28px;
 }
 
-.product-slide {
+/* .product-slide {
   margin-right: -200px;
-}
+} */
 @media (max-width: 991px) {
   .product-slide {
     margin-right: 0;
@@ -308,4 +316,4 @@ body {
     padding-right: 20px;
     text-align: right;
   }
-}/*# sourceMappingURL=style.css.map */
+} /*# sourceMappingURL=style.css.map */

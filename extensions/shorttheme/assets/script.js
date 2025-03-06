@@ -53,26 +53,26 @@ document.addEventListener("DOMContentLoaded", function () {
   setTimeout(() => {
     console.log("DOM fully loaded and parsed");
     $(".product-active").owlCarousel({
-      loop: true,
-      margin: 10,
-      nav: true,
-      dots: true,
       autoplay: true,
-      autoplayTimeout: 3000,
+      smartSpeed: 300,
+      margin: 10,
+      loop: true,
       autoplayHoverPause: true,
+      dots: false,
+      nav: true,
       responsive: {
         0: {
-          items: 1,
-        },
-        600: {
           items: 2,
         },
-        1000: {
+        600: {
           items: 3,
+        },
+        1000: {
+          items: 4,
         },
       },
     });
-  }, 900); // Delay to ensure HTML content is fully loaded
+  }, 1200); // Delay to ensure HTML content is fully loaded
 });
 
 async function showData(paragraphClass, position, apiUrl) {
@@ -138,12 +138,14 @@ async function showData(paragraphClass, position, apiUrl) {
                   (product) => `
                 <div class="grid">
                   <div class="product-item">
+                  <a href="/products/${product?.handle}">
                     <div class="product-img">
                       <img src="${product?.image?.src}" alt="${product.title}">
                     </div>
                     <div class="product-text">
                       <h2><a href="/products/${product?.handle}">${product?.title}</a></h2>
                     </div>
+                    </a>
                   </div>
                 </div>
               `,
