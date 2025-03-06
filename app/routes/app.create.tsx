@@ -224,6 +224,7 @@ export default function CategorySelector() {
     />
   );
 
+  console.log("Selected Articles:", articles, selectedArticles, inputValue);
   return (
     <Page title="Create Marketing Entry">
       <Card roundedAbove="sm">
@@ -409,7 +410,6 @@ export default function CategorySelector() {
               onSelect={setSelectedArticles}
               listTitle="Available Articles"
             />
-
             <Select
               label="Select a Category"
               options={[
@@ -433,7 +433,7 @@ export default function CategorySelector() {
             />
             <input type="hidden" name="productHandle" value={producthandle} />
             <input type="hidden" name="categoryId" value={selectedCategory} />
-            <input type="hidden" name="blogId" value={articleId} />
+            <input type="hidden" name="blogId" value={selectedArticles} />
             <Button submit>Save</Button>
           </FormLayout>
         </fetcher.Form>

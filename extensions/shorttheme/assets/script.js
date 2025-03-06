@@ -4,45 +4,76 @@
   /*------------------------------------------
      product slider
   -------------------------------------------*/
-  if ($(".product-active").length) {
+  // document.addEventListener("DOMContentLoaded", function () {
+  //   setTimeout(() => {
+  //     console.log("DOM fully loaded and parsed");
+  //     if ($(".product-active").length) {
+  //       $(".product-active").owlCarousel({
+  //         autoplay: true,
+  //         smartSpeed: 300,
+  //         margin: 30,
+  //         loop: true,
+  //         autoplayHoverPause: true,
+  //         dots: false,
+  //         nav: true,
+  //         responsive: {
+  //           0: {
+  //             items: 1,
+  //           },
+
+  //           350: {
+  //             items: 1,
+  //           },
+  //           500: {
+  //             items: 2,
+  //           },
+
+  //           768: {
+  //             items: 3,
+  //           },
+  //           992: {
+  //             items: 3,
+  //           },
+
+  //           1200: {
+  //             items: 3,
+  //           },
+
+  //           1400: {
+  //             items: 4,
+  //           },
+  //         },
+  //       });
+  //     }
+  //   }, 600);
+  // });
+})(window.jQuery);
+
+document.addEventListener("DOMContentLoaded", function () {
+  setTimeout(() => {
+    console.log("DOM fully loaded and parsed");
     $(".product-active").owlCarousel({
-      autoplay: true,
-      smartSpeed: 300,
-      margin: 30,
       loop: true,
-      autoplayHoverPause: true,
-      dots: false,
+      margin: 10,
       nav: true,
+      dots: true,
+      autoplay: true,
+      autoplayTimeout: 3000,
+      autoplayHoverPause: true,
       responsive: {
         0: {
           items: 1,
         },
-
-        350: {
-          items: 1,
-        },
-        500: {
+        600: {
           items: 2,
         },
-
-        768: {
+        1000: {
           items: 3,
-        },
-        992: {
-          items: 3,
-        },
-
-        1200: {
-          items: 3,
-        },
-
-        1400: {
-          items: 4,
         },
       },
     });
-  }
-})(window.jQuery);
+  }, 900); // Delay to ensure HTML content is fully loaded
+});
 
 async function showData(paragraphClass, position, apiUrl) {
   const blogId = document.getElementById("blogId").value;
@@ -67,6 +98,9 @@ async function showData(paragraphClass, position, apiUrl) {
     // Parse the JSON response
     const data = await response.json();
     console.log("Fetched Marketing data====:", data);
+    let marketingData = data?.items[0];
+
+    console.log("Marketing Data:===", marketingData);
 
     // ❌ Fix: Use a different variable name instead of `fetch`
     const categoryResponse = await fetch(`${apiUrl}/categoryById`, {
@@ -89,19 +123,13 @@ async function showData(paragraphClass, position, apiUrl) {
     let products = categoryData?.products;
     console.log("Fetched Data:===", products);
 
-    // Extract required fields from the response
-    const productImage =
-      data.items[0]?.productImage || "https://via.placeholder.com/150"; // Default image
-    const productTitle = data.items[0]?.productTitle || "Default Title";
-    const productLink = data.items[0]?.link || "#";
-
     // Create the HTML content dynamically
     const htmlContent = `
       <section class="product-area">
         <div class="my-container-fluid">
           <div class="section-title">
-            <h2>Best Product for You</h2>
-            <p>Lorem ipsum dolor sit amet...</p>
+            <h2>${marketingData?.headline}</h2>
+            <p>${marketingData?.description}</p>
           </div>
           <div class="product-wrap product-slide">
             <div class="row-grids product-active owl-carousel">
@@ -111,10 +139,10 @@ async function showData(paragraphClass, position, apiUrl) {
                 <div class="grid">
                   <div class="product-item">
                     <div class="product-img">
-                      <img src="${product.image || "assets/default.jpg"}" alt="">
+                      <img src="${product?.image?.src}" alt="${product.title}">
                     </div>
                     <div class="product-text">
-                      <h2><a href="#">${product.title}</a></h2>
+                      <h2><a href="/products/${product?.handle}">${product?.title}</a></h2>
                     </div>
                   </div>
                 </div>
@@ -162,10 +190,3 @@ async function showData(paragraphClass, position, apiUrl) {
 
 // Example: Insert HTML after 8 sentences
 showData("article-template__content", 8, "http://localhost:3301/api");
-
-// Example: Insert HTML after 3 sentences, fetching data from an API
-showData(
-  "article-template__content",
-  8,
-  "http://localhost:3301/api", // Replace with your API endpoint
-);

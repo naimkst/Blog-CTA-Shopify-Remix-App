@@ -22,7 +22,7 @@ import { authenticate } from "app/shopify.server";
 export const loader = async ({ request }: any) => {
   const { session } = await authenticate.admin(request);
   console.log("Request method:", session);
-  const reviews = await prisma.item.findMany({
+  const reviews = await prisma.marketing.findMany({
     orderBy: {
       createdAt: "desc",
     },
@@ -38,7 +38,7 @@ export const action = async ({ request }: any) => {
   const body = await request.formData();
   if (request.method == "DELETE") {
     try {
-      const updatedReview = await prisma.item.delete({
+      const updatedReview = await prisma.marketing.delete({
         where: { id: body.get("id") },
       });
 
@@ -68,6 +68,8 @@ export default function Index() {
     );
   }
 
+  console.log("reviews=====", reviews);
+
   return (
     <Page fullWidth>
       <Box background="bg-surface">
@@ -84,9 +86,9 @@ export default function Index() {
           }}
         >
           <div style={{ flex: "1" }}>productImage</div>
-          <div style={{ flex: "1" }}>Name</div>
-          <div style={{ flex: "1" }}>productId</div>
-          <div style={{ flex: "1" }}>productTitle</div>
+          <div style={{ flex: "1" }}>Headline</div>
+          <div style={{ flex: "1" }}>Blog Id</div>
+          <div style={{ flex: "1" }}>Layout</div>
           <div style={{ flex: "1" }}>productSlug</div>
           <div style={{ flex: "1" }}>Action</div>
         </div>
@@ -108,10 +110,10 @@ export default function Index() {
                   alt={item?.productTitle}
                 />
               </div>
-              <div style={{ flex: "1" }}>{item?.title}</div>
-              <div style={{ flex: "1" }}>{item?.productId}</div>
-              <div style={{ flex: "1" }}>{item?.productTitle}</div>
-              <div style={{ flex: "1" }}>{item?.productSlug}</div>
+              <div style={{ flex: "1" }}>{item?.headline}</div>
+              <div style={{ flex: "1" }}>{item?.blogId}</div>
+              <div style={{ flex: "1" }}>{item?.layout}</div>
+              <div style={{ flex: "1" }}>{item?.position}</div>
 
               <div style={{ flex: "1" }}>
                 <InlineStack wrap={false}>
