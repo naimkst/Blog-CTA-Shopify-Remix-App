@@ -1,82 +1,93 @@
-import { useState, useEffect } from "react";
-import { Form, useNavigate, useNavigation, useSubmit } from "@remix-run/react";
+import { useState, useEffect, useMemo, useCallback } from "react";
+import { useFetcher } from "@remix-run/react";
 import {
+  Autocomplete,
   BlockStack,
   Button,
   Card,
   FormLayout,
   InlineGrid,
+  LegacyStack,
   Page,
   RadioButton,
   Select,
+  Tag,
   TextField,
 } from "@shopify/polaris";
 import { ActionFunction, json, redirect } from "@remix-run/node";
 import { cors } from "remix-utils/cors";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { redirectDocument } from "@remix-run/node";
+import { v4 as uuidv4 } from "uuid";
+import { authenticate } from "app/shopify.server";
 
 export let action: ActionFunction = async ({ request }) => {
+  const data = await authenticate.admin(request);
+
   try {
     const formData = new URLSearchParams(await request.text());
 
     // Extract values
-    const productId = formData.get("productId");
-    const title = formData.get("title");
-    const productTitle = formData.get("productTitle");
-    const productImage = formData.get("productImage") || "";
+    const headline = formData.get("headline")?.trim() || "";
+    const description = formData.get("description")?.trim() || "";
+    const layout = formData.get("layout") || "1";
+    const categoryId = formData.get("categoryId");
+    const productHandle = formData.get("productHandle");
+    const thumbnail = formData.get("thumbnail");
+    const buttonLink = formData.get("buttonLink");
+    const buttonText = formData.get("buttonText");
+    const productsId = formData.get("productId") || "";
     const blogId = formData.get("blogId") || "";
     const position = formData.get("position") || "";
-    const productSlug = formData.get("productSlug") || ""; // ✅ Get productSlug
 
     // Validate required fields
-    if (!productId || !title || !productTitle) {
-      return json({ message: "All fields are required" }, { status: 400 });
+    if (!headline || !blogId || !position || !layout) {
+      return json(
+        { success: false, message: "All required fields must be filled" },
+        { status: 400 },
+      );
     }
 
-    // ✅ Save form data to Prisma (including productSlug)
-    const newMarketingEntry = await prisma.item.create({
+    // ✅ Save data to Prisma
+    const newMarketingEntry = await prisma.marketing.create({
       data: {
-        id: productId,
-        title,
-        productId,
-        productImage,
-        productTitle,
+        id: uuidv4(),
+        headline,
+        description,
+        productHandle,
         blogId,
         position,
-        productSlug, // ✅ Save productSlug
+        categoryId,
+        layout,
+        productsId,
+        shop: data.session.shop || "",
+        thumbnail,
+        buttonLink,
+        buttonText,
       },
     });
 
-    //if susccessful, return a success message
-
-    if (!newMarketingEntry) {
-      return json({ message: "Error saving data" }, { status: 400 });
-    }
-    if (newMarketingEntry) {
-      return json(
-        {
-          message: "Data saved successfully",
-          entry: newMarketingEntry,
-        },
-        { status: 201 },
-      );
-    }
-    if (!newMarketingEntry) {
-      return json({ message: "Error saving data" }, { status: 400 });
-    }
-
-    // Redirect to the home page on success
-    return redirect("/", { status: 302 });
-  } catch (error) {
+    return json(
+      {
+        success: true,
+        message: "Data saved successfully",
+        entry: newMarketingEntry,
+      },
+      { status: 201 },
+    );
+  } catch (error: any) {
     console.error("Error saving data:", error);
     return json(
-      { message: "Internal Server Error", error: error.message },
+      {
+        success: false,
+        message: "Internal Server Error",
+        error: error.message,
+      },
       { status: 500 },
     );
   }
 };
+
 export default function CategorySelector() {
   const [products, setProducts] = useState([]);
   const [blogs, setBlogs] = useState([]);
@@ -88,37 +99,42 @@ export default function CategorySelector() {
   const [selectedCategory, setSelectedCategory] = useState<any>(null);
   const [headline, setHeadline] = useState("");
   const [description, setDescription] = useState("");
-  const [productImage, setProductImage] = useState("");
-  const [productTitle, setProductTitle] = useState("");
+  const [productId, setProductId] = useState("");
   const [producthandle, setProductHandle] = useState("");
   const [position, setPosition] = useState("5");
   const [layout, setLayout] = useState("1");
+  const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
+  const [blogsId, setBlogsId] = useState<string[]>([]);
 
-  const navigation = useNavigation();
-  const navigate = useNavigate();
+  const [articles, setArticles] = useState<{ value: string; label: string }[]>(
+    [],
+  );
+  const [selectedArticles, setSelectedArticles] = useState<string[]>([]);
+  const [inputValue, setInputValue] = useState("");
+  const [options, setOptions] = useState<{ value: string; label: string }[]>(
+    [],
+  );
+  const [loading, setLoading] = useState<boolean>(true);
+
+  const fetcher = useFetcher<any>();
 
   useEffect(() => {
-    console.log("Navigation state:", navigation.state);
-    if (navigation.state === "submitting") {
-      toast.success("Data saved successfully!");
-      setTimeout(() => {
-        navigate("/app");
-      }, 2000);
-    } else if (navigation.state === "idle") {
-      if (navigation.formData) {
+    if (fetcher.data) {
+      if (fetcher?.data?.success) {
         toast.success("Data saved successfully!");
-        setTimeout(() => {
-          navigate("/app");
-        }, 2000);
+      } else {
+        toast.error("Error saving data");
       }
     }
-  }, [navigation]);
+  }, [fetcher.data]);
 
   useEffect(() => {
     // Fetch product categories from Shopify
     fetch("/api/category")
       .then((res) => res.json())
-      .then((data) => setProducts(data?.products || []));
+      .then((data) => {
+        setProducts(data?.collections?.custom_collections || []);
+      });
 
     fetch("/api/blogs")
       .then((res) => res.json())
@@ -130,6 +146,7 @@ export default function CategorySelector() {
 
   const getArticle = async (blogId: string) => {
     if (blogId === "") {
+      setArticle([]);
       return;
     }
     fetch(`/api/article`, {
@@ -143,17 +160,74 @@ export default function CategorySelector() {
       .then((data) => {
         console.log("Articles:", data?.articles);
         setArticle(data?.articles || []);
+        const formattedArticles = data.articles.map(
+          (article: { id: string; title: string }) => ({
+            value: article.id,
+            label: article.title,
+          }),
+        );
+        setArticles(formattedArticles);
+        setOptions(formattedArticles);
       })
       .catch((error) => {
         console.error("Error fetching articles:", error);
       });
   };
 
+  const updateText = useCallback(
+    (value: string) => {
+      setInputValue(value);
+      if (value === "") {
+        setOptions(articles);
+        return;
+      }
+      const filterRegex = new RegExp(value, "i");
+      const resultOptions = articles.filter((option) =>
+        option.label.match(filterRegex),
+      );
+      setOptions(resultOptions);
+    },
+    [articles],
+  );
+
+  const removeTag = useCallback(
+    (tag: string) => () => {
+      const updatedSelection = selectedArticles.filter((id) => id !== tag);
+      setSelectedArticles(updatedSelection);
+    },
+    [selectedArticles],
+  );
+
+  const verticalContentMarkup =
+    selectedArticles.length > 0 ? (
+      <LegacyStack spacing="extraTight" alignment="center">
+        {selectedArticles.map((articleId) => {
+          const article = articles.find((art) => art.value === articleId);
+          return (
+            <Tag key={articleId} onRemove={removeTag(articleId)}>
+              {article?.label || "Unknown Article"}
+            </Tag>
+          );
+        })}
+      </LegacyStack>
+    ) : null;
+
+  const textField = (
+    <Autocomplete.TextField
+      onChange={updateText}
+      label="Select Articles"
+      value={inputValue}
+      placeholder="Search for an article"
+      verticalContent={verticalContentMarkup}
+      autoComplete="off"
+      disabled={articles.length === 0}
+    />
+  );
+
   return (
     <Page title="Create Marketing Entry">
-      <ToastContainer />
       <Card roundedAbove="sm">
-        <Form method="post">
+        <fetcher.Form method="post">
           <br />
           <FormLayout>
             <Card>
@@ -181,6 +255,7 @@ export default function CategorySelector() {
                     onChange={() => {
                       setLayout("1");
                     }}
+                    value={layout}
                   />
                 </div>
 
@@ -207,6 +282,7 @@ export default function CategorySelector() {
                     onChange={() => {
                       setLayout("2");
                     }}
+                    value={layout}
                   />
                 </div>
 
@@ -233,6 +309,7 @@ export default function CategorySelector() {
                     onChange={() => {
                       setLayout("3");
                     }}
+                    value={layout}
                   />
                 </div>
 
@@ -275,7 +352,10 @@ export default function CategorySelector() {
             />
             <TextField
               label="Your Description"
-              onChange={(value) => setDescription(value)}
+              onChange={(value) => {
+                setDescription(value);
+              }}
+              name="description"
               value={description}
               placeholder="Enter the description"
               multiline={4}
@@ -301,12 +381,12 @@ export default function CategorySelector() {
               ]}
               value={String(selectBlog)}
               onChange={(value: any) => {
-                console.log("Selected Blog:", value);
+                console.log("Selected Blog:", !value);
                 setSelectBlog(String(value));
                 getArticle(String(value));
               }}
             />
-            <Select
+            {/* <Select
               label="Select a Article"
               options={[
                 { label: "Select your Article", value: "" }, // Add the default option
@@ -319,7 +399,17 @@ export default function CategorySelector() {
               onChange={(value: any) => {
                 setArticleId(String(value));
               }}
+            /> */}
+
+            <Autocomplete
+              allowMultiple
+              options={options}
+              selected={selectedArticles}
+              textField={textField}
+              onSelect={setSelectedArticles}
+              listTitle="Available Articles"
             />
+
             <Select
               label="Select a Category"
               options={[
@@ -332,28 +422,21 @@ export default function CategorySelector() {
               value={selectedCategory || ""}
               onChange={(value: any) => {
                 setSelectedCategory(String(value));
-
                 const selectedProduct: any = products.find(
                   (prod: any) => prod.id == value,
                 );
-                console.log("Selected Product:", selectedProduct);
                 if (selectedProduct) {
-                  console.log("Selected Product Data:", selectedProduct);
-                  setProductImage(selectedProduct.image.src || "");
-                  setProductTitle(selectedProduct.title);
+                  setProductId(selectedProduct.id);
                   setProductHandle(selectedProduct.handle);
                 }
               }}
             />
-            <input type="hidden" name="productSlug" value={producthandle} />
-            <input type="hidden" name="productId" value={selectedCategory} />
-            <input type="hidden" name="productImage" value={productImage} />
-            <input type="hidden" name="productTitle" value={productTitle} />
+            <input type="hidden" name="productHandle" value={producthandle} />
+            <input type="hidden" name="categoryId" value={selectedCategory} />
             <input type="hidden" name="blogId" value={articleId} />
-
             <Button submit>Save</Button>
           </FormLayout>
-        </Form>
+        </fetcher.Form>
       </Card>
     </Page>
   );

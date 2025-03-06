@@ -1,3 +1,6 @@
+{{ 'owl.carousel.css' | asset_url | stylesheet_tag }}
+{{ 'owl.theme.css' | asset_url | stylesheet_tag }}
+{{ 'owl.transitions.css' | asset_url | stylesheet_tag }}
 {{ 'style.css' | asset_url | stylesheet_tag }}
 
 <input type="hidden" id="blogId" value="{{ article.id }}" />
@@ -13,6 +16,8 @@
 {% endif %}
 
 
+<script src="{{ 'jquery.min.js' | asset_url }}" async></script>
+<script src="{{ 'jquery-plugin-collection.js' | asset_url }}" async></script>
 <script src="{{ 'script.js' | asset_url }}" async></script>
 
 {% schema %}

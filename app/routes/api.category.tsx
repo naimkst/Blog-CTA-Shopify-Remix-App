@@ -7,7 +7,7 @@ export const loader = async ({ request }: any) => {
   try {
     // Fetch collections (categories) from Shopify
     const response = await fetch(
-      `https://${shop}/admin/api/2025-01/products.json`,
+      `https://${shop}/admin/api/2025-01/custom_collections.json`,
       {
         headers: {
           "X-Shopify-Access-Token": accessToken,
@@ -22,8 +22,8 @@ export const loader = async ({ request }: any) => {
       throw new Error(`Shopify API Error: ${data.errors || "Unknown error"}`);
     }
 
-    return json({ products: data.products });
-  } catch (error) {
+    return json({ collections: data });
+  } catch (error: any) {
     console.error("Error fetching categories:", error);
     return json({ error: error.message }, { status: 500 });
   }

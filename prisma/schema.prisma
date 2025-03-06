@@ -43,21 +43,20 @@ model Product {
   updatedAt   DateTime @updatedAt
 }
 
-model Item {
-  id          String   @id
-  headline    String
-  description String?
-  productId   String
-  blogId      String
-  position    String
-  categoryId  String?
-  productsId  String?
-  layout      String
-  shop        String
-  thumbnail   String?
-  buttonLink  String?
-  buttonText  String?
-  productSlug String? // ✅ Add this field
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+model Marketing {
+  id            String   @id @default(uuid())
+  headline      String
+  description   String?
+  productHandle String?
+  blogId        String
+  position      String
+  categoryId    String?
+  productsId    String?
+  layout        String
+  shop          String
+  thumbnail     String?
+  buttonLink    String?
+  buttonText    String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 }

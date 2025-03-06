@@ -4,7 +4,7 @@ import { cors } from "remix-utils/cors";
 import prisma from "../db.server";
 
 export const loader = async ({ request }: any) => {
-  const items = await prisma.item.findMany({
+  const items = await prisma.marketing.findMany({
     orderBy: {
       createdAt: "desc",
     },

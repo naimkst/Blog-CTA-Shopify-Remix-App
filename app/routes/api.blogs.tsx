@@ -23,7 +23,7 @@ export const loader = async ({ request }: any) => {
     }
 
     return json({ blogs: data.blogs });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error fetching categories:", error);
     return json({ error: error.message }, { status: 500 });
   }
