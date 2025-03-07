@@ -11,6 +11,7 @@ import {
   Page,
   RadioButton,
   Select,
+  Spinner,
   Tag,
   TextField,
 } from "@shopify/polaris";
@@ -120,7 +121,7 @@ export default function CategorySelector() {
   const [options, setOptions] = useState<{ value: string; label: string }[]>(
     [],
   );
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const fetcher = useFetcher<any>();
 
@@ -151,8 +152,10 @@ export default function CategorySelector() {
   }, []);
 
   const getArticle = async (blogId: string) => {
-    if (blogId === "") {
-      setArticle([]);
+    setLoading(true);
+    if (blogId === "" || !blogId) {
+      setArticles([]);
+      setLoading(false);
       return;
     }
     fetch(`/api/article`, {
@@ -174,9 +177,11 @@ export default function CategorySelector() {
         );
         setArticles(formattedArticles);
         setOptions(formattedArticles);
+        setLoading(false);
       })
       .catch((error) => {
         console.error("Error fetching articles:", error);
+        setLoading(false);
       });
   };
 
@@ -400,28 +405,31 @@ export default function CategorySelector() {
                 getArticle(String(value));
               }}
             />
-            {/* <Select
-              label="Select a Article"
-              options={[
-                { label: "Select your Article", value: "" }, // Add the default option
-                ...article.map((cat: any) => ({
-                  label: cat.title,
-                  value: String(cat.id), // Store only the ID
-                })),
-              ]}
-              value={String(articleId)}
-              onChange={(value: any) => {
-                setArticleId(String(value));
-              }}
-            /> */}
-            <Autocomplete
-              allowMultiple
-              options={options}
-              selected={selectedArticles}
-              textField={textField}
-              onSelect={setSelectedArticles}
-              listTitle="Available Articles"
-            />
+            <div style={{ flex: "1", position: "relative" }}>
+              <Autocomplete
+                allowMultiple
+                options={options}
+                selected={selectedArticles}
+                textField={textField}
+                onSelect={setSelectedArticles}
+                listTitle="Available Articles"
+              />
+              {loading && (
+                <div
+                  style={{
+                    position: "absolute",
+                    top: "42px",
+                    left: "0",
+                    right: "0",
+                    display: "flex",
+                    justifyContent: "center",
+                    transform: "translateY(-50%)",
+                  }}
+                >
+                  <Spinner accessibilityLabel="Spinner example" size="large" />
+                </div>
+              )}
+            </div>
             <Select
               label="Select a Category"
               options={[
