@@ -87,9 +87,10 @@ export default function Index() {
         >
           <div style={{ flex: "1" }}>productImage</div>
           <div style={{ flex: "1" }}>Headline</div>
-          <div style={{ flex: "1" }}>Blog Id</div>
+          <div style={{ flex: "1" }}>Blog Title</div>
           <div style={{ flex: "1" }}>Layout</div>
           <div style={{ flex: "1" }}>productSlug</div>
+          <div style={{ flex: "1" }}>Status</div>
           <div style={{ flex: "1" }}>Action</div>
         </div>
         <Divider />
@@ -111,9 +112,19 @@ export default function Index() {
                 />
               </div>
               <div style={{ flex: "1" }}>{item?.headline}</div>
-              <div style={{ flex: "1" }}>{item?.blogId}</div>
+              <div style={{ flex: "1" }}>{item?.articleTitles}</div>
               <div style={{ flex: "1" }}>{item?.layout}</div>
               <div style={{ flex: "1" }}>{item?.position}</div>
+
+              <div style={{ flex: "1" }}>
+                <InlineStack wrap={false}>
+                  {item?.status == "0" ? (
+                    <Badge tone="critical">Pending</Badge>
+                  ) : (
+                    <Badge tone="success">Active</Badge>
+                  )}
+                </InlineStack>
+              </div>
 
               <div style={{ flex: "1" }}>
                 <InlineStack wrap={false}>

@@ -30,7 +30,7 @@ export const action: ActionFunction = async ({ request }) => {
     }
 
     return json({ articles: data.articles });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error fetching categories:", error);
     return json({ error: error.message }, { status: 500 });
   }

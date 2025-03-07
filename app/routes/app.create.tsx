@@ -39,6 +39,8 @@ export let action: ActionFunction = async ({ request }) => {
     const productsId = formData.get("productId") || "";
     const blogId = formData.get("blogId") || "";
     const position = formData.get("position") || "";
+    const articleTitles = formData.get("articleTitles") || "";
+    const articleId = formData.get("articleId") || "";
 
     // Validate required fields
     if (!headline || !blogId || !position || !layout) {
@@ -64,6 +66,9 @@ export let action: ActionFunction = async ({ request }) => {
         thumbnail,
         buttonLink,
         buttonText,
+        articleTitles,
+        articleId,
+        status: "2",
       },
     });
 
@@ -110,6 +115,7 @@ export default function CategorySelector() {
     [],
   );
   const [selectedArticles, setSelectedArticles] = useState<string[]>([]);
+  const [articleTitles, setArticleTitles] = useState<string[]>([]);
   const [inputValue, setInputValue] = useState("");
   const [options, setOptions] = useState<{ value: string; label: string }[]>(
     [],
@@ -224,7 +230,13 @@ export default function CategorySelector() {
     />
   );
 
-  console.log("Selected Articles:", articles, selectedArticles, inputValue);
+  useEffect(() => {
+    const selectedTitles = articles
+      .filter((article: any) => selectedArticles.includes(article.value))
+      .map((article: any) => article.label);
+    setArticleTitles(selectedTitles);
+  }, [selectedArticles]);
+
   return (
     <Page title="Create Marketing Entry">
       <Card roundedAbove="sm">
@@ -402,7 +414,6 @@ export default function CategorySelector() {
                 setArticleId(String(value));
               }}
             /> */}
-
             <Autocomplete
               allowMultiple
               options={options}
@@ -435,6 +446,8 @@ export default function CategorySelector() {
             <input type="hidden" name="productHandle" value={producthandle} />
             <input type="hidden" name="categoryId" value={selectedCategory} />
             <input type="hidden" name="blogId" value={selectedArticles} />
+            <input type="hidden" name="articleId" value={blogId} />
+            <input type="hidden" name="articleTitles" value={articleTitles} />
             <Button submit>Save</Button>
           </FormLayout>
         </fetcher.Form>
