@@ -98,20 +98,13 @@ export default function CategorySelector() {
   const [products, setProducts] = useState([]);
   const [blogs, setBlogs] = useState([]);
   const [blogId, setBlogId] = useState("");
-  const [article, setArticle] = useState([]);
-  const [articleId, setArticleId] = useState("");
-  const [selectArticle, setSelectArticle] = useState<any>(null);
   const [selectBlog, setSelectBlog] = useState<any>(null);
   const [selectedCategory, setSelectedCategory] = useState<any>(null);
   const [headline, setHeadline] = useState("");
   const [description, setDescription] = useState("");
-  const [productId, setProductId] = useState("");
   const [producthandle, setProductHandle] = useState("");
   const [position, setPosition] = useState("5");
   const [layout, setLayout] = useState("1");
-  const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
-  const [blogsId, setBlogsId] = useState<string[]>([]);
-
   const [articles, setArticles] = useState<{ value: string; label: string }[]>(
     [],
   );
@@ -167,8 +160,6 @@ export default function CategorySelector() {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log("Articles:", data?.articles);
-        setArticle(data?.articles || []);
         const formattedArticles = data.articles.map(
           (article: { id: string; title: string }) => ({
             value: article.id,
@@ -400,7 +391,6 @@ export default function CategorySelector() {
               ]}
               value={String(selectBlog)}
               onChange={(value: any) => {
-                console.log("Selected Blog:", !value);
                 setSelectBlog(String(value));
                 getArticle(String(value));
               }}
@@ -424,6 +414,7 @@ export default function CategorySelector() {
                     display: "flex",
                     justifyContent: "center",
                     transform: "translateY(-50%)",
+                    zIndex: 999,
                   }}
                 >
                   <Spinner accessibilityLabel="Spinner example" size="large" />
@@ -446,7 +437,6 @@ export default function CategorySelector() {
                   (prod: any) => prod.id == value,
                 );
                 if (selectedProduct) {
-                  setProductId(selectedProduct.id);
                   setProductHandle(selectedProduct.handle);
                 }
               }}
