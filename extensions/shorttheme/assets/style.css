@@ -1,7 +1,8 @@
 /*---------------------------
 	Fonts
 ----------------------------*/
-@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
+
 .section-padding {
   padding: 130px 0;
 }
@@ -130,12 +131,12 @@ body {
   color: #000;
   transition: all 0.4s;
   text-transform: uppercase;
-  font-family: "Inter";
+  font-family: "Montserrat", sans-serif;
 }
 .product-wrap .product-item .product-text h2 {
   margin-top: 5px;
   margin-bottom: 0;
-  font-family: "Inter";
+  font-family: "Montserrat", sans-serif;
   text-align: center;
   line-height: 14px;
 }
@@ -144,6 +145,7 @@ body {
   text-decoration: none;
   color: #000;
   font-weight: 300;
+  font-family: "Montserrat", sans-serif;
 }
 .product-wrap .product-item:hover .product-img img {
   transform: scale(1.2);
@@ -212,7 +214,7 @@ body {
   font-size: 35px;
   font-weight: 700;
   margin: 0;
-  font-family: "Inter";
+  font-family: "Montserrat", sans-serif;
 }
 @media (max-width: 575px) {
   .section-title h2 {
@@ -220,9 +222,10 @@ body {
   }
 }
 .section-title p {
-  font-size: 18px;
-  font-family: "Inter";
-  line-height: 28px;
+  font-size: 13px;
+  font-family: "Montserrat", sans-serif;
+  line-height: 15px;
+  font-weight: 300;
 }
 
 /* .product-slide {
@@ -240,7 +243,7 @@ body {
   background: #fff;
   text-decoration: none;
   font-size: 18px;
-  font-family: "Inter";
+  font-family: "Montserrat", sans-serif;
   border: 1px solid #ddd7d7;
   border-radius: 5px;
   color: #000;
@@ -287,7 +290,7 @@ body {
 .cta-item .cta-text h2 {
   font-size: 35px;
   margin-top: 0;
-  font-family: "Inter";
+  font-family: "Montserrat", sans-serif;
 }
 @media (max-width: 575px) {
   .cta-item .cta-text h2 {
@@ -298,7 +301,7 @@ body {
   font-size: 18px;
   line-height: 27px;
   margin-bottom: 30px;
-  font-family: "Inter";
+  font-family: "Montserrat", sans-serif;
 }
 @media (max-width: 575px) {
   .cta-item .cta-text p {

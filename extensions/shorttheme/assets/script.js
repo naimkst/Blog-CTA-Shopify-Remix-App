@@ -99,6 +99,7 @@ async function showData(paragraphClass, position, apiUrl) {
     const data = await response.json();
     console.log("Fetched Marketing data====:", data);
     let marketingData = data?.items[0];
+    let blogData = data?.items;
 
     console.log("item dataaaaaaaa:===", data);
 
@@ -180,39 +181,43 @@ async function showData(paragraphClass, position, apiUrl) {
       return;
     }
 
-    // Get the paragraph content as plain text
-    const originalContent = paragraph.innerHTML;
+    blogData?.map((item) => {
+      console.log("Item data====:", item.layout, item.position);
 
-    // Split content by sentences (e.g., ".", "?", "!")
-    const sentences = originalContent.split(/([.?!]+)/);
+      // Get the paragraph content as plain text
+      const originalContent = paragraph.innerHTML;
 
-    // Check if there are enough sentences
-    if (sentences.length / 2 < Number(data.items[0]?.position)) {
-      console.warn("Paragraph does not contain enough sentences.");
-      return;
-    }
+      // Split content by sentences (e.g., ".", "?", "!")
+      const sentences = originalContent.split(/([.?!]+)/);
 
-    // Find the index after the specified sentence count
-    const insertionIndex = Number(data.items[0]?.position) * 2;
+      // Check if there are enough sentences
+      if (sentences.length / 2 < Number(item.position)) {
+        console.warn("Paragraph does not contain enough sentences.");
+        return;
+      }
 
-    // Insert the HTML content after the specified sentence
-    const layout =
-      data.items[0]?.layout == "1"
-        ? layout1
-        : data.items[0]?.layout == "2"
-          ? layout2
-          : data.items[0]?.layout == "3"
-            ? layout3
-            : data.items[0]?.layout == "4"
-              ? layout4
-              : null; // Default case if no match
+      // Find the index after the specified sentence count
+      const insertionIndex = Number(item.position) * 2;
 
-    if (layout) {
-      sentences.splice(insertionIndex, 0, layout);
-    }
+      // Insert the HTML content after the specified sentence
+      const layout =
+        item.layout == "1"
+          ? layout1
+          : item.layout == "2"
+            ? layout2
+            : item.layout == "3"
+              ? layout3
+              : item.layout == "4"
+                ? layout4
+                : null; // Default case if no match
 
-    // Join the sentences back and set it as the new content
-    paragraph.innerHTML = sentences.join("");
+      if (layout) {
+        sentences.splice(insertionIndex, 0, layout);
+      }
+
+      // Join the sentences back and set it as the new content
+      paragraph.innerHTML = sentences.join("");
+    });
   } catch (error) {
     console.error("Error inserting content:", error);
   }
