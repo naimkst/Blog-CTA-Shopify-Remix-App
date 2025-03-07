@@ -73,7 +73,7 @@ export let action: ActionFunction = async ({ request }) => {
       },
     });
 
-    return json(
+    const response = json(
       {
         success: true,
         message: "Data saved successfully",
@@ -81,6 +81,11 @@ export let action: ActionFunction = async ({ request }) => {
       },
       { status: 201 },
     );
+    if (response.status === 201) {
+      return response;
+    }
+    return redirect("/", { status: 302 });
+    // return await cors(request, response);
   } catch (error: any) {
     console.error("Error saving data:", error);
     return json(
