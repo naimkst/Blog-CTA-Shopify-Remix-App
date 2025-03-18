@@ -1,7 +1,7 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
 client_id = "fc69044270e65a6f15dfefb9fca0a4e6"
-application_url = "https://disagree-table-distributors-injuries.trycloudflare.com"
+application_url = "https://authorization-planet-define-riders.trycloudflare.com"
 embedded = true
 name = "marketing-cta"
 handle = "marketing-cta"
@@ -27,9 +27,9 @@ scopes = "write_products"
 
 [auth]
 redirect_urls = [
-  "https://disagree-table-distributors-injuries.trycloudflare.com/auth/callback",
-  "https://disagree-table-distributors-injuries.trycloudflare.com/auth/shopify/callback",
-  "https://disagree-table-distributors-injuries.trycloudflare.com/api/auth/callback"
+  "https://authorization-planet-define-riders.trycloudflare.com/auth/callback",
+  "https://authorization-planet-define-riders.trycloudflare.com/auth/shopify/callback",
+  "https://authorization-planet-define-riders.trycloudflare.com/api/auth/callback"
 ]
 
 [pos]

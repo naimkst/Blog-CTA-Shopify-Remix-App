@@ -45,6 +45,7 @@ model Product {
 
 model Marketing {
   id            String   @id @default(uuid())
+  name          String
   headline      String
   description   String?
   productHandle String?
@@ -60,6 +61,8 @@ model Marketing {
   articleId     String?
   articleTitles String?
   status        String?
+  customOptions Json?
+  customStyles  String?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 }
