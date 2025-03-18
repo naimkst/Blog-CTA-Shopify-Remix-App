@@ -464,6 +464,10 @@ export default function CategorySelector() {
     [],
   );
 
+  const [prdLimit, setprdLimit] = useState(20);
+
+  const prdLimitHandle = useCallback((value: number) => setprdLimit(value), []);
+
   console.log("selected", selected);
   return (
     <Page title="Create Marketing Entry">
@@ -678,6 +682,24 @@ export default function CategorySelector() {
                         setProductHandle(selectedProduct.handle);
                       }
                     }}
+                  />
+                  <RangeSlider
+                    output
+                    label="Product Limit"
+                    min={0}
+                    max={360}
+                    value={prdLimit}
+                    onChange={prdLimitHandle}
+                    suffix={
+                      <p
+                        style={{
+                          minWidth: "24px",
+                          textAlign: "right",
+                        }}
+                      >
+                        {prdLimit}
+                      </p>
+                    }
                   />
                 </FormLayout>
               )}
