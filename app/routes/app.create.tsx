@@ -21,6 +21,9 @@ import {
   RangeSlider,
   Layout,
   Form,
+  DropZone,
+  Thumbnail,
+  Text,
 } from "@shopify/polaris";
 import { ActionFunction, json, redirect } from "@remix-run/node";
 import { cors } from "remix-utils/cors";
@@ -28,6 +31,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { v4 as uuidv4 } from "uuid";
 import { authenticate } from "app/shopify.server";
+import { NoteIcon } from "@shopify/polaris-icons";
 
 export let action: ActionFunction = async ({ request }) => {
   const data = await authenticate.admin(request);
@@ -468,6 +472,45 @@ export default function CategorySelector() {
 
   const prdLimitHandle = useCallback((value: number) => setprdLimit(value), []);
 
+  const [file, setFile] = useState<File>();
+
+  const handleDropZoneDrop = useCallback(
+    (_dropFiles: File[], acceptedFiles: File[], _rejectedFiles: File[]) =>
+      setFile(acceptedFiles[0]),
+    [],
+  );
+
+  const validImageTypes = ["image/gif", "image/jpeg", "image/png"];
+
+  const fileUpload = !file && <DropZone.FileUpload />;
+  const uploadedFile = file && (
+    <div
+      style={{
+        display: "flex",
+        gap: "8px",
+        alignItems: "center",
+        justifyContent: "center",
+        paddingTop: "20px",
+      }}
+    >
+      <Thumbnail
+        size="large"
+        alt={file.name}
+        source={
+          validImageTypes.includes(file.type)
+            ? window.URL.createObjectURL(file)
+            : NoteIcon
+        }
+      />
+      {/* <div>
+        {file.name}{" "}
+        <Text variant="bodySm" as="p">
+          {file.size} bytes
+        </Text>
+      </div> */}
+    </div>
+  );
+
   console.log("selected", selected);
   return (
     <Page title="Create Marketing Entry">
@@ -634,7 +677,7 @@ export default function CategorySelector() {
                       getArticle(String(value));
                     }}
                   />
-                  <div style={{ flex: "1", position: "relative" }}>
+                  {/* <div style={{ flex: "1", position: "relative" }}>
                     <Autocomplete
                       allowMultiple
                       options={options}
@@ -662,7 +705,13 @@ export default function CategorySelector() {
                         />
                       </div>
                     )}
-                  </div>
+                  </div> */}
+
+                  <DropZone allowMultiple={false} onDrop={handleDropZoneDrop}>
+                    {uploadedFile}
+                    {fileUpload}
+                  </DropZone>
+
                   <Select
                     label="Select a Category"
                     options={[
