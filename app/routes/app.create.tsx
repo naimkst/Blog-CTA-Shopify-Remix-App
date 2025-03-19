@@ -579,36 +579,7 @@ export default function CategorySelector() {
     (document.getElementById("file-input") as HTMLInputElement).value = "";
   };
 
-  const handleSave = async () => {
-    if (!file) {
-      alert("Please select an image first.");
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append("file", file);
-
-    try {
-      const response = await fetch("/api/upload", {
-        method: "POST",
-        body: formData,
-      });
-
-      const data = await response.json();
-      if (data.success) {
-        alert("Image uploaded successfully!");
-      } else {
-        alert("Upload failed.");
-      }
-    } catch (error) {
-      console.error("Upload error:", error);
-    }
-  };
-
-  if (selectedImage) {
-    console.log("Selected file:", file);
-    // handleSave();
-  }
+  console.log("selectBlog", selectBlog);
   return (
     <Page title="Create Marketing Entry">
       <Card roundedAbove="sm">
@@ -1474,9 +1445,9 @@ export default function CategorySelector() {
 
               <input type="hidden" name="productHandle" value={producthandle} />
               <input type="hidden" name="categoryId" value={selectedCategory} />
-              <input type="hidden" name="blogId" value={selectedArticles} />
-              <input type="hidden" name="articleId" value={blogId} />
-              <input type="hidden" name="articleTitles" value={articleTitles} />
+              <input type="hidden" name="blogId" value={selectBlog} />
+              {/* <input type="hidden" name="articleId" value={blogId} /> */}
+              {/* <input type="hidden" name="articleTitles" value={articleTitles} /> */}
               <input
                 type="hidden"
                 name="productLimit"

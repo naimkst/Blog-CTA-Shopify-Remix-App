@@ -3,7 +3,9 @@
 {{ 'owl.transitions.css' | asset_url | stylesheet_tag }}
 {{ 'style.css' | asset_url | stylesheet_tag }}
 
-<input type="hidden" id="blogId" value="{{ article.id }}" />
+
+<input type="hidden" id="blogId" value="{{ blog.id }}" />
+
 
 
 <script src="{{ 'jquery.min.js' | asset_url }}" defer></script>
@@ -22,4 +24,3 @@
   ]
 }
 {% endschema %}
-
