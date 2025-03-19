@@ -42,12 +42,6 @@ export let action: ActionFunction = async ({ request }: any) => {
   try {
     const formData = await request.formData();
     const file = formData.get("thumbnail") as File; // Get file
-    if (!file || typeof file === "string") {
-      return json(
-        { success: false, message: "No file uploaded" },
-        { status: 400 },
-      );
-    }
 
     // Extract values
     const name = formData.get("name")?.trim() || "";
@@ -98,24 +92,21 @@ export let action: ActionFunction = async ({ request }: any) => {
       );
     }
 
-    // ✅ Convert file to a Buffer
-    function sanitizeFileName(fileName: string) {
-      return fileName
-        .toLowerCase() // Convert to lowercase
-        .replace(/\s+/g, "-") // Replace spaces with hyphens
-        .replace(/[^a-z0-9.-]/g, ""); // Remove special characters except dot and hyphen
-    }
-    const arrayBuffer = await file.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
-    const fileName = `${Date.now()}-${sanitizeFileName(file.name)}`;
-    const filePath = path.join(process.cwd(), "public", "uploads", fileName);
-    await writeFile(filePath, buffer);
-
-    if (!fileName) {
-      return json(
-        { success: false, message: "No filename found" },
-        { status: 400 },
-      );
+    let imageName = "";
+    if (file) {
+      // ✅ Convert file to a Buffer
+      function sanitizeFileName(fileName: string) {
+        return fileName
+          .toLowerCase() // Convert to lowercase
+          .replace(/\s+/g, "-") // Replace spaces with hyphens
+          .replace(/[^a-z0-9.-]/g, ""); // Remove special characters except dot and hyphen
+      }
+      const arrayBuffer = await file.arrayBuffer();
+      const buffer = Buffer.from(arrayBuffer);
+      const fileName = `${Date.now()}-${sanitizeFileName(file.name)}`;
+      imageName = fileName;
+      const filePath = path.join(process.cwd(), "public", "uploads", fileName);
+      await writeFile(filePath, buffer);
     }
 
     // ✅ Save data to Prisma
@@ -132,7 +123,7 @@ export let action: ActionFunction = async ({ request }: any) => {
         layout,
         productsId,
         shop: data.session.shop || "",
-        thumbnail: fileName,
+        thumbnail: imageName ? imageName : "",
         buttonLink,
         buttonText,
         articleTitles,
