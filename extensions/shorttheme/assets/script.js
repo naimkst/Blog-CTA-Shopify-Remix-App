@@ -149,7 +149,7 @@ async function showData(paragraphClass, position, apiUrl) {
       switch (item.layout) {
         case "1":
           return `
-          <section class="product-area">
+          <section class="product-area" style="background-color: ${item.customOptions.ctaCardBackgroundColor}">
             <div class="my-container-fluid">
               <div class="section-title">
                 <h2>${item.headline}</h2>

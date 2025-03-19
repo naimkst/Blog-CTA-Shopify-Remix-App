@@ -578,7 +578,11 @@ export default function CategorySelector() {
           <br />
           <Tabs tabs={tabs} selected={selected} onSelect={handleTabChange}>
             <LegacyCard.Section title={tabs[selected].content}>
-              {selected === 0 && (
+              <div
+                style={
+                  selected === 0 ? { display: "block" } : { display: "none" }
+                }
+              >
                 <FormLayout>
                   <Card>
                     <InlineGrid gap="400" columns={4}>
@@ -902,9 +906,13 @@ export default function CategorySelector() {
                     </div>
                   )}
                 </FormLayout>
-              )}
+              </div>
 
-              {selected === 1 && (
+              <div
+                style={
+                  selected === 1 ? { display: "block" } : { display: "none" }
+                }
+              >
                 <FormLayout>
                   <FormLayout.Group>
                     <div
@@ -968,9 +976,13 @@ export default function CategorySelector() {
                     }
                   />
                 </FormLayout>
-              )}
+              </div>
 
-              {selected === 2 && (
+              <div
+                style={
+                  selected === 2 ? { display: "block" } : { display: "none" }
+                }
+              >
                 <FormLayout>
                   <FormLayout.Group>
                     <div
@@ -1037,9 +1049,13 @@ export default function CategorySelector() {
                     }
                   />
                 </FormLayout>
-              )}
+              </div>
 
-              {selected === 3 && (
+              <div
+                style={
+                  selected === 3 ? { display: "block" } : { display: "none" }
+                }
+              >
                 <FormLayout>
                   <FormLayout.Group>
                     <div
@@ -1128,9 +1144,13 @@ export default function CategorySelector() {
                     }
                   />
                 </FormLayout>
-              )}
+              </div>
 
-              {selected === 4 && (
+              <div
+                style={
+                  selected === 4 ? { display: "block" } : { display: "none" }
+                }
+              >
                 <FormLayout>
                   <RangeSlider
                     output
@@ -1151,8 +1171,13 @@ export default function CategorySelector() {
                     }
                   />
                 </FormLayout>
-              )}
-              {selected === 5 && (
+              </div>
+
+              <div
+                style={
+                  selected === 5 ? { display: "block" } : { display: "none" }
+                }
+              >
                 <FormLayout>
                   <FormLayout.Group>
                     <RangeSlider
@@ -1193,8 +1218,13 @@ export default function CategorySelector() {
                     />
                   </FormLayout.Group>
                 </FormLayout>
-              )}
-              {selected === 6 && (
+              </div>
+
+              <div
+                style={
+                  selected === 6 ? { display: "block" } : { display: "none" }
+                }
+              >
                 <FormLayout>
                   <FormLayout.Group>
                     <div
@@ -1365,8 +1395,13 @@ export default function CategorySelector() {
                     </div>
                   </FormLayout.Group>
                 </FormLayout>
-              )}
-              {selected === 7 && (
+              </div>
+
+              <div
+                style={
+                  selected === 7 ? { display: "block" } : { display: "none" }
+                }
+              >
                 <FormLayout>
                   <FormLayout.Group>
                     <div
@@ -1414,8 +1449,12 @@ export default function CategorySelector() {
                     </div>
                   </FormLayout.Group>
                 </FormLayout>
-              )}
-              {selected === 8 && (
+              </div>
+              <div
+                style={
+                  selected === 8 ? { display: "block" } : { display: "none" }
+                }
+              >
                 <FormLayout>
                   <div
                     style={{
@@ -1432,7 +1471,7 @@ export default function CategorySelector() {
                     />
                   </div>
                 </FormLayout>
-              )}
+              </div>
 
               <input type="hidden" name="productHandle" value={producthandle} />
               <input type="hidden" name="categoryId" value={selectedCategory} />
