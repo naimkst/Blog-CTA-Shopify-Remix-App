@@ -32,14 +32,25 @@ import "react-toastify/dist/ReactToastify.css";
 import { v4 as uuidv4 } from "uuid";
 import { authenticate } from "app/shopify.server";
 import { NoteIcon } from "@shopify/polaris-icons";
+import path from "path";
+import { Buffer } from "buffer";
+import { writeFile } from "fs/promises";
 
-export let action: ActionFunction = async ({ request }) => {
+export let action: ActionFunction = async ({ request }: any) => {
   const data = await authenticate.admin(request);
 
   try {
-    const formData = new URLSearchParams(await request.text());
+    const formData = await request.formData();
+    const file = formData.get("thumbnail") as File; // Get file
+    if (!file || typeof file === "string") {
+      return json(
+        { success: false, message: "No file uploaded" },
+        { status: 400 },
+      );
+    }
 
     // Extract values
+    const name = formData.get("name")?.trim() || "";
     const headline = formData.get("headline")?.trim() || "";
     const description = formData.get("description")?.trim() || "";
     const layout = formData.get("layout");
@@ -53,11 +64,56 @@ export let action: ActionFunction = async ({ request }) => {
     const position = formData.get("position") || "";
     const articleTitles = formData.get("articleTitles") || "";
     const articleId = formData.get("articleId") || "";
+    const productLimit = formData.get("productLimit") || "";
+    const ctaCardBackgroundColor = formData.get("ctaCardBackgroundColor") || "";
+    const ctaBorderColor = formData.get("ctaBorderColor") || "";
+    const ctaBorderRadius = formData.get("ctaBorderRadius") || "";
+    const prdBackgroundColor = formData.get("prdBackgroundColor") || "";
+    const prdBorderColor = formData.get("prdBorderColor") || "";
+    const prdBorderRadius = formData.get("prdBorderRadius") || "";
+    const buttonBackgroundColor = formData.get("buttonBackgroundColor") || "";
+    const buttonTextColor = formData.get("buttonTextColor") || "";
+    const buttonHoverColor = formData.get("buttonHoverColor") || "";
+    const buttonTextSize = formData.get("buttonTextSize") || "";
+    const staticImageRadius = formData.get("staticImageRadius") || "";
+    const headingFontSize = formData.get("headingFontSize") || "";
+    const descriptionFontSize = formData.get("descriptionFontSize") || "";
+    const marginTop = formData.get("marginTop") || "";
+    const marginBottom = formData.get("marginBottom") || "";
+    const marginLeft = formData.get("marginLeft") || "";
+    const marginRight = formData.get("marginRight") || "";
+    const paddingTop = formData.get("paddingTop") || "";
+    const paddingBottom = formData.get("paddingBottom") || "";
+    const paddingLeft = formData.get("paddingLeft") || "";
+    const paddingRight = formData.get("paddingRight") || "";
+    const sliderArrowColor = formData.get("sliderArrowColor") || "";
+    const sliderNavigationColor = formData.get("sliderNavigationColor") || "";
+    const customStyles = formData.get("customStyles") || "";
 
     // Validate required fields
-    if (!headline || !blogId || !position || !layout) {
+    if (!headline || !name || !position || !layout) {
       return json(
         { success: false, message: "All required fields must be filled" },
+        { status: 400 },
+      );
+    }
+
+    // ✅ Convert file to a Buffer
+    function sanitizeFileName(fileName: string) {
+      return fileName
+        .toLowerCase() // Convert to lowercase
+        .replace(/\s+/g, "-") // Replace spaces with hyphens
+        .replace(/[^a-z0-9.-]/g, ""); // Remove special characters except dot and hyphen
+    }
+    const arrayBuffer = await file.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+    const fileName = `${Date.now()}-${sanitizeFileName(file.name)}`;
+    const filePath = path.join(process.cwd(), "public", "uploads", fileName);
+    await writeFile(filePath, buffer);
+
+    if (!fileName) {
+      return json(
+        { success: false, message: "No filename found" },
         { status: 400 },
       );
     }
@@ -66,6 +122,7 @@ export let action: ActionFunction = async ({ request }) => {
     const newMarketingEntry = await prisma.marketing.create({
       data: {
         id: uuidv4(),
+        name,
         headline,
         description,
         productHandle,
@@ -75,14 +132,44 @@ export let action: ActionFunction = async ({ request }) => {
         layout,
         productsId,
         shop: data.session.shop || "",
-        thumbnail,
+        thumbnail: fileName,
         buttonLink,
         buttonText,
         articleTitles,
         articleId,
         status: "2",
+        productLimit,
+        customOptions: {
+          ctaCardBackgroundColor,
+          ctaBorderColor,
+          ctaBorderRadius,
+          prdBackgroundColor,
+          prdBorderColor,
+          prdBorderRadius,
+          buttonBackgroundColor,
+          buttonTextColor,
+          buttonHoverColor,
+          buttonTextSize,
+          staticImageRadius,
+          headingFontSize,
+          descriptionFontSize,
+          marginTop,
+          marginBottom,
+          marginLeft,
+          marginRight,
+          paddingTop,
+          paddingBottom,
+          paddingLeft,
+          paddingRight,
+          sliderArrowColor,
+          sliderNavigationColor,
+          customStyles,
+        },
+        customStyles,
       },
     });
+
+    console.log("New Marketing Entry:", newMarketingEntry);
 
     const response = json(
       {
@@ -117,7 +204,10 @@ export default function CategorySelector() {
   const [selectBlog, setSelectBlog] = useState<any>(null);
   const [selectedCategory, setSelectedCategory] = useState<any>(null);
   const [headline, setHeadline] = useState("");
+  const [itemName, setItemName] = useState("");
   const [description, setDescription] = useState("");
+  const [buttonText, setButtonText] = useState("View More");
+  const [buttonLink, setButtonLink] = useState("#");
   const [producthandle, setProductHandle] = useState("");
   const [position, setPosition] = useState("5");
   const [layout, setLayout] = useState("1");
@@ -472,50 +562,57 @@ export default function CategorySelector() {
 
   const prdLimitHandle = useCallback((value: number) => setprdLimit(value), []);
 
-  const [file, setFile] = useState<File>();
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [file, setFile] = useState<File | null>(null);
 
-  const handleDropZoneDrop = useCallback(
-    (_dropFiles: File[], acceptedFiles: File[], _rejectedFiles: File[]) =>
-      setFile(acceptedFiles[0]),
-    [],
-  );
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files[0]) {
+      const file = event.target.files[0];
+      setFile(file);
+      setSelectedImage(URL.createObjectURL(file)); // Show preview
+    }
+  };
 
-  const validImageTypes = ["image/gif", "image/jpeg", "image/png"];
+  const handleRemoveImage = () => {
+    setSelectedImage(null);
+    setFile(null);
+    (document.getElementById("file-input") as HTMLInputElement).value = "";
+  };
 
-  const fileUpload = !file && <DropZone.FileUpload />;
-  const uploadedFile = file && (
-    <div
-      style={{
-        display: "flex",
-        gap: "8px",
-        alignItems: "center",
-        justifyContent: "center",
-        paddingTop: "20px",
-      }}
-    >
-      <Thumbnail
-        size="large"
-        alt={file.name}
-        source={
-          validImageTypes.includes(file.type)
-            ? window.URL.createObjectURL(file)
-            : NoteIcon
-        }
-      />
-      {/* <div>
-        {file.name}{" "}
-        <Text variant="bodySm" as="p">
-          {file.size} bytes
-        </Text>
-      </div> */}
-    </div>
-  );
+  const handleSave = async () => {
+    if (!file) {
+      alert("Please select an image first.");
+      return;
+    }
 
-  console.log("selected", selected);
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const response = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        alert("Image uploaded successfully!");
+      } else {
+        alert("Upload failed.");
+      }
+    } catch (error) {
+      console.error("Upload error:", error);
+    }
+  };
+
+  if (selectedImage) {
+    console.log("Selected file:", file);
+    // handleSave();
+  }
   return (
     <Page title="Create Marketing Entry">
       <Card roundedAbove="sm">
-        <fetcher.Form method="post">
+        <fetcher.Form method="post" encType="multipart/form-data">
           <br />
           <Tabs tabs={tabs} selected={selected} onSelect={handleTabChange}>
             <LegacyCard.Section title={tabs[selected].content}>
@@ -633,6 +730,16 @@ export default function CategorySelector() {
                     </InlineGrid>
                   </Card>
                   <TextField
+                    label="Item Name"
+                    onChange={(value) => {
+                      setItemName(value);
+                    }}
+                    value={itemName}
+                    name="name"
+                    placeholder="Enter the Item Name"
+                    autoComplete="off"
+                  />
+                  <TextField
                     label="Heading"
                     onChange={(value) => {
                       setHeadline(value);
@@ -707,56 +814,134 @@ export default function CategorySelector() {
                     )}
                   </div> */}
 
-                  <DropZone allowMultiple={false} onDrop={handleDropZoneDrop}>
-                    {uploadedFile}
-                    {fileUpload}
-                  </DropZone>
-
-                  <Select
-                    label="Select a Category"
-                    options={[
-                      { label: "Select your Category", value: "" }, // Add the default option
-                      ...products.map((cat: any) => ({
-                        label: cat.title,
-                        value: String(cat.id), // Store only the ID
-                      })),
-                    ]}
-                    value={selectedCategory || ""}
-                    onChange={(value: any) => {
-                      setSelectedCategory(String(value));
-                      const selectedProduct: any = products.find(
-                        (prod: any) => prod.id == value,
-                      );
-                      if (selectedProduct) {
-                        setProductHandle(selectedProduct.handle);
-                      }
-                    }}
-                  />
-                  <RangeSlider
-                    output
-                    label="Product Limit"
-                    min={0}
-                    max={360}
-                    value={prdLimit}
-                    onChange={prdLimitHandle}
-                    suffix={
-                      <p
+                  {layout === "1" || layout === "2" ? (
+                    <>
+                      <Select
+                        label="Select a Category"
+                        options={[
+                          { label: "Select your Category", value: "" }, // Add the default option
+                          ...products.map((cat: any) => ({
+                            label: cat.title,
+                            value: String(cat.id), // Store only the ID
+                          })),
+                        ]}
+                        value={selectedCategory || ""}
+                        onChange={(value: any) => {
+                          setSelectedCategory(String(value));
+                          const selectedProduct: any = products.find(
+                            (prod: any) => prod.id == value,
+                          );
+                          if (selectedProduct) {
+                            setProductHandle(selectedProduct.handle);
+                          }
+                        }}
+                      />
+                      <div
                         style={{
-                          minWidth: "24px",
-                          textAlign: "right",
+                          marginTop: "20px",
                         }}
                       >
-                        {prdLimit}
-                      </p>
-                    }
-                  />
+                        <RangeSlider
+                          output
+                          label="Product Limit"
+                          min={0}
+                          max={360}
+                          value={prdLimit}
+                          onChange={prdLimitHandle}
+                          suffix={
+                            <p
+                              style={{
+                                minWidth: "24px",
+                                textAlign: "right",
+                              }}
+                            >
+                              {prdLimit}
+                            </p>
+                          }
+                        />
+                      </div>
+                    </>
+                  ) : (
+                    <div
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: "20px",
+                        width: "100%",
+                      }}
+                    >
+                      <div className="upload-container">
+                        <label className="upload-box" id="upload-box">
+                          {selectedImage ? (
+                            <>
+                              <img
+                                style={{
+                                  width: "150px",
+                                  height: "150px",
+                                  borderRadius: "8px",
+                                  objectFit: "cover",
+                                }}
+                                src={selectedImage ? selectedImage : ""}
+                                alt=""
+                              />
+                              <button
+                                className="remove-btn"
+                                id="remove-btn"
+                                onClick={handleRemoveImage}
+                                style={{
+                                  display: selectedImage ? "block" : "none",
+                                  marginTop: "10px",
+                                  border: "none",
+                                  padding: "8px 10px",
+                                  fontSize: "12px",
+                                  borderRadius: "4px",
+                                }}
+                              >
+                                Change Image
+                              </button>
+                            </>
+                          ) : (
+                            <p id="upload-text">
+                              Click & Upload Your Image Here
+                            </p>
+                          )}
+
+                          <input
+                            type="file"
+                            id="file-input"
+                            name="thumbnail"
+                            accept="image/*"
+                            onChange={handleFileChange}
+                            style={{ display: "none" }}
+                          />
+                        </label>
+                      </div>
+                      <TextField
+                        label="Button Text"
+                        onChange={(value) => {
+                          setButtonText(value);
+                        }}
+                        name="buttonText"
+                        value={buttonText}
+                        placeholder="Enter the button text"
+                        autoComplete="off"
+                      />
+
+                      <TextField
+                        label="Button Link"
+                        onChange={(value) => {
+                          setButtonLink(value);
+                        }}
+                        name="buttonLink"
+                        value={buttonLink}
+                        placeholder="Enter the button Link"
+                        autoComplete="off"
+                      />
+                    </div>
+                  )}
                 </FormLayout>
               )}
-              <input type="hidden" name="productHandle" value={producthandle} />
-              <input type="hidden" name="categoryId" value={selectedCategory} />
-              <input type="hidden" name="blogId" value={selectedArticles} />
-              <input type="hidden" name="articleId" value={blogId} />
-              <input type="hidden" name="articleTitles" value={articleTitles} />
+
               {selected === 1 && (
                 <FormLayout>
                   <FormLayout.Group>
@@ -911,8 +1096,8 @@ export default function CategorySelector() {
                       <TextField
                         label=""
                         value={hsbToHex(buttonBgColor)}
-                        name="prdBackgroundColor"
-                        placeholder="Product Background color"
+                        name="buttonBackgroundColor"
+                        placeholder="Button Background color"
                         autoComplete="off"
                       />
                     </div>
@@ -933,8 +1118,8 @@ export default function CategorySelector() {
                       <TextField
                         label=""
                         value={hsbToHex(buttonTextColor)}
-                        name="prdBorderColor"
-                        placeholder="Product Border color"
+                        name="buttonTextColor"
+                        placeholder="Button Text color"
                         autoComplete="off"
                       />
                     </div>
@@ -955,8 +1140,8 @@ export default function CategorySelector() {
                       <TextField
                         label=""
                         value={hsbToHex(buttonHoverColor)}
-                        name="prdBorderColor"
-                        placeholder="Product Border color"
+                        name="buttonHoverColor"
+                        placeholder="Button Hover color"
                         autoComplete="off"
                       />
                     </div>
@@ -1230,7 +1415,7 @@ export default function CategorySelector() {
                         flexDirection: "column",
                       }}
                     >
-                      <label htmlFor="">Button Background color</label>
+                      <label htmlFor="">Slider Arrow Background color</label>
                       <ColorPicker
                         onChange={setsliderArrowColor}
                         color={sliderArrowColor}
@@ -1238,8 +1423,8 @@ export default function CategorySelector() {
                       <TextField
                         label=""
                         value={hsbToHex(sliderArrowColor)}
-                        name="prdBackgroundColor"
-                        placeholder="Product Background color"
+                        name="sliderArrowColor"
+                        placeholder="Slider Background color"
                         autoComplete="off"
                       />
                     </div>
@@ -1252,7 +1437,7 @@ export default function CategorySelector() {
                         flexDirection: "column",
                       }}
                     >
-                      <label htmlFor="">Button Background color</label>
+                      <label htmlFor="">Slider Icon color</label>
                       <ColorPicker
                         onChange={setsliderNavigationColor}
                         color={sliderNavigationColor}
@@ -1260,8 +1445,8 @@ export default function CategorySelector() {
                       <TextField
                         label=""
                         value={hsbToHex(sliderNavigationColor)}
-                        name="prdBackgroundColor"
-                        placeholder="Product Background color"
+                        name="sliderNavigationColor"
+                        placeholder="Slider Icon color"
                         autoComplete="off"
                       />
                     </div>
@@ -1281,11 +1466,61 @@ export default function CategorySelector() {
                       multiline={20}
                       value={customCSS}
                       onChange={handleChange}
-                      name="custom-css"
+                      name="customStyles"
                     />
                   </div>
                 </FormLayout>
               )}
+
+              <input type="hidden" name="productHandle" value={producthandle} />
+              <input type="hidden" name="categoryId" value={selectedCategory} />
+              <input type="hidden" name="blogId" value={selectedArticles} />
+              <input type="hidden" name="articleId" value={blogId} />
+              <input type="hidden" name="articleTitles" value={articleTitles} />
+              <input
+                type="hidden"
+                name="productLimit"
+                value={String(prdLimit)}
+              />
+              <input
+                type="hidden"
+                name="ctaBorderRadius"
+                value={ctaBorderRadius}
+              />
+              <input
+                type="hidden"
+                name="prdBorderRadius"
+                value={prdBorderRadius}
+              />
+              <input
+                type="hidden"
+                name="buttonTextSize"
+                value={buttonTextSize}
+              />
+              <input
+                type="hidden"
+                name="staticImageRadius"
+                value={staticImageRadius}
+              />
+              <input
+                type="hidden"
+                name="headingFontSize"
+                value={headingFontSize}
+              />
+              <input
+                type="hidden"
+                name="descriptionFontSize"
+                value={descriptionFontSize}
+              />
+              <input type="hidden" name="marginTop" value={marginTop} />
+              <input type="hidden" name="marginBottom" value={marginBottom} />
+              <input type="hidden" name="marginLeft" value={marginLeft} />
+              <input type="hidden" name="marginRight" value={marginRight} />
+              <input type="hidden" name="paddingTop" value={paddingTop} />
+              <input type="hidden" name="paddingBottom" value={paddingBottom} />
+              <input type="hidden" name="paddingLeft" value={paddingLeft} />
+              <input type="hidden" name="paddingRight" value={paddingRight} />
+
               <div
                 style={{
                   display: "flex",

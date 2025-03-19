@@ -1,0 +1,17 @@
+label#upload-box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 60px 0px;
+    margin: 20px;
+    border: 2px dashed #999;
+    border-radius: 5px;
+    cursor: pointer;
+        flex-direction: column;
+}
+#file-input{
+    display: none;
+}
+label#upload-box{
+  text-align: center;
+}
