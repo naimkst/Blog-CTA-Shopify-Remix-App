@@ -1,7 +1,7 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
 client_id = "fc69044270e65a6f15dfefb9fca0a4e6"
-application_url = "https://coins-starter-cells-atom.trycloudflare.com"
+application_url = "https://supporters-laptops-opposed-motors.trycloudflare.com"
 embedded = true
 name = "marketing-cta"
 handle = "marketing-cta"
@@ -27,9 +27,9 @@ scopes = "write_products"
 
 [auth]
 redirect_urls = [
-  "https://coins-starter-cells-atom.trycloudflare.com/auth/callback",
-  "https://coins-starter-cells-atom.trycloudflare.com/auth/shopify/callback",
-  "https://coins-starter-cells-atom.trycloudflare.com/api/auth/callback"
+  "https://supporters-laptops-opposed-motors.trycloudflare.com/auth/callback",
+  "https://supporters-laptops-opposed-motors.trycloudflare.com/auth/shopify/callback",
+  "https://supporters-laptops-opposed-motors.trycloudflare.com/api/auth/callback"
 ]
 
 [pos]

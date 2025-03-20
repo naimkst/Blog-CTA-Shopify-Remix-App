@@ -13,11 +13,17 @@ import {
 } from "@shopify/polaris";
 import prisma from "../db.server";
 import { Form, useLoaderData } from "@remix-run/react";
-import { CheckCircleIcon, DeleteIcon, XIcon } from "@shopify/polaris-icons";
+import {
+  CheckCircleIcon,
+  DeleteIcon,
+  WandIcon,
+  XIcon,
+} from "@shopify/polaris-icons";
 import { json } from "@remix-run/node";
 import { toast } from "react-toastify";
 import { cors } from "remix-utils/cors";
 import { authenticate } from "app/shopify.server";
+import { Link as LinkTo } from "@remix-run/react";
 
 export const loader = async ({ request }: any) => {
   const { session } = await authenticate.admin(request);
@@ -85,11 +91,11 @@ export default function Index() {
             padding: "10px",
           }}
         >
-          <div style={{ flex: "1" }}>productImage</div>
-          <div style={{ flex: "1" }}>Headline</div>
-          <div style={{ flex: "1" }}>Blog Title</div>
+          <div style={{ flex: "1" }}>Image</div>
+          <div style={{ flex: "1" }}>Title</div>
+          <div style={{ flex: "1" }}>Handle</div>
           <div style={{ flex: "1" }}>Layout</div>
-          <div style={{ flex: "1" }}>productSlug</div>
+          <div style={{ flex: "1" }}>Position</div>
           <div style={{ flex: "1" }}>Status</div>
           <div style={{ flex: "1" }}>Action</div>
         </div>
@@ -105,14 +111,24 @@ export default function Index() {
                 padding: "10px",
               }}
             >
-              <div style={{ flex: "1" }}>
-                <Thumbnail
-                  source={item?.productImage}
-                  alt={item?.productTitle}
-                />
-              </div>
+              {item?.thumbnail ? (
+                <div style={{ flex: "1" }}>
+                  <Thumbnail
+                    source={`/uploads/` + item?.thumbnail}
+                    alt={item?.productTitle}
+                  />
+                </div>
+              ) : (
+                <div style={{ flex: "1" }}>
+                  <Thumbnail
+                    source={`/assets/images/Image-not-found.png`}
+                    alt={item?.productTitle}
+                  />
+                </div>
+              )}
+
+              <div style={{ flex: "1" }}>{item?.name}</div>
               <div style={{ flex: "1" }}>{item?.headline}</div>
-              <div style={{ flex: "1" }}>{item?.articleTitles}</div>
               <div style={{ flex: "1" }}>{item?.layout}</div>
               <div style={{ flex: "1" }}>{item?.position}</div>
 
@@ -182,6 +198,24 @@ export default function Index() {
                           />
                         </Tooltip>
                       </Link>
+                    </button>
+                  </Form>
+
+                  <Form method="PATCH">
+                    <input type="hidden" name="id" value={item?.id} />
+                    <button
+                      type="submit"
+                      style={{ background: "transparent", border: "none" }}
+                    >
+                      <LinkTo to={`/app/create?id=${item?.id}`}>
+                        <Tooltip content="Edit">
+                          <Icon
+                            source={WandIcon}
+                            tone="success"
+                            accessibilityLabel="Edit"
+                          />
+                        </Tooltip>
+                      </LinkTo>
                     </button>
                   </Form>
                 </InlineStack>

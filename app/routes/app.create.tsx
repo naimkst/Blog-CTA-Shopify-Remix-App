@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
-import { useFetcher } from "@remix-run/react";
+import { useFetcher, useParams, useSearchParams } from "@remix-run/react";
 import {
   Autocomplete,
   BlockStack,
@@ -83,6 +83,7 @@ export let action: ActionFunction = async ({ request }: any) => {
     const sliderArrowColor = formData.get("sliderArrowColor") || "";
     const sliderNavigationColor = formData.get("sliderNavigationColor") || "";
     const customStyles = formData.get("customStyles") || "";
+    const existingId = formData.get("existingId") || "";
 
     // Validate required fields
     if (!headline || !name || !position || !layout) {
@@ -110,9 +111,9 @@ export let action: ActionFunction = async ({ request }: any) => {
     }
 
     // ✅ Save data to Prisma
-    const newMarketingEntry = await prisma.marketing.create({
-      data: {
-        id: uuidv4(),
+    const newMarketingEntry = await prisma.marketing.upsert({
+      where: { id: existingId || uuidv4() }, // Use `existingId` if updating
+      update: {
         name,
         headline,
         description,
@@ -123,7 +124,54 @@ export let action: ActionFunction = async ({ request }: any) => {
         layout,
         productsId,
         shop: data.session.shop || "",
-        thumbnail: imageName ? imageName : "",
+        thumbnail: imageName || "",
+        buttonLink,
+        buttonText,
+        articleTitles,
+        articleId,
+        status: "2",
+        productLimit,
+        customOptions: {
+          ctaCardBackgroundColor,
+          ctaBorderColor,
+          ctaBorderRadius,
+          prdBackgroundColor,
+          prdBorderColor,
+          prdBorderRadius,
+          buttonBackgroundColor,
+          buttonTextColor,
+          buttonHoverColor,
+          buttonTextSize,
+          staticImageRadius,
+          headingFontSize,
+          descriptionFontSize,
+          marginTop,
+          marginBottom,
+          marginLeft,
+          marginRight,
+          paddingTop,
+          paddingBottom,
+          paddingLeft,
+          paddingRight,
+          sliderArrowColor,
+          sliderNavigationColor,
+          customStyles,
+        },
+        customStyles,
+      },
+      create: {
+        id: uuidv4(), // Generate a new ID if creating
+        name,
+        headline,
+        description,
+        productHandle,
+        blogId,
+        position,
+        categoryId,
+        layout,
+        productsId,
+        shop: data.session.shop || "",
+        thumbnail: imageName || "",
         buttonLink,
         buttonText,
         articleTitles,
@@ -160,7 +208,7 @@ export let action: ActionFunction = async ({ request }: any) => {
       },
     });
 
-    console.log("New Marketing Entry:", newMarketingEntry);
+    console.log("Upserted Marketing Entry:", newMarketingEntry);
 
     const response = json(
       {
@@ -190,6 +238,7 @@ export let action: ActionFunction = async ({ request }: any) => {
 
 export default function CategorySelector() {
   const [products, setProducts] = useState([]);
+  const [editData, setEditData] = useState(null);
   const [blogs, setBlogs] = useState([]);
   const [blogId, setBlogId] = useState("");
   const [selectBlog, setSelectBlog] = useState<any>(null);
@@ -214,6 +263,134 @@ export default function CategorySelector() {
   const [loading, setLoading] = useState<boolean>(false);
 
   const fetcher = useFetcher<any>();
+  const [searchParams] = useSearchParams();
+  const itemId = searchParams.get("id");
+
+  function hexToHsb(hex: string) {
+    let r = 0,
+      g = 0,
+      b = 0;
+
+    // Remove '#' if present
+    hex = hex.replace(/^#/, "");
+
+    // Convert hex to RGB
+    if (hex.length === 3) {
+      r = parseInt(hex[0] + hex[0], 16);
+      g = parseInt(hex[1] + hex[1], 16);
+      b = parseInt(hex[2] + hex[2], 16);
+    } else if (hex.length === 6) {
+      r = parseInt(hex.substring(0, 2), 16);
+      g = parseInt(hex.substring(2, 4), 16);
+      b = parseInt(hex.substring(4, 6), 16);
+    }
+
+    // Normalize RGB values
+    r /= 255;
+    g /= 255;
+    b /= 255;
+
+    // Find max and min RGB values
+    const max = Math.max(r, g, b);
+    const min = Math.min(r, g, b);
+    const delta = max - min;
+
+    let hue = 0;
+    if (delta !== 0) {
+      if (max === r) {
+        hue = ((g - b) / delta) % 6;
+      } else if (max === g) {
+        hue = (b - r) / delta + 2;
+      } else {
+        hue = (r - g) / delta + 4;
+      }
+      hue *= 60;
+      if (hue < 0) hue += 360;
+    }
+
+    const saturation = max === 0 ? 0 : delta / max;
+    const brightness = max;
+
+    return { hue, brightness, saturation, alpha: 1 };
+  }
+
+  const getEditData = async () => {
+    if (!itemId) return;
+    fetch(`/api/itemEdit`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ id: itemId }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("data", data?.items);
+        setEditData(data?.items);
+        if (data?.items) {
+          setHeadline(data?.items?.headline);
+          setItemName(data?.items?.name);
+          setDescription(data?.items?.description);
+          setButtonLink(data?.items?.buttonLink);
+          setButtonText(data?.items?.buttonText);
+          setProductHandle(data?.items?.productHandle);
+          setPosition(data?.items?.position);
+          setLayout(data?.items?.layout);
+          setSelectBlog(data?.items?.blogId);
+          setSelectedCategory(data?.items?.categoryId);
+          setSelectedImage(`/uploads/${data?.items?.thumbnail}`);
+          setColor(
+            hexToHsb(data?.items?.customOptions?.ctaCardBackgroundColor),
+          );
+          setCTAborder(hexToHsb(data?.items?.customOptions?.ctaBorderColor));
+          setctaBorderRadius(data?.items?.customOptions?.ctaBorderRadius);
+          setPrdBGColor(
+            hexToHsb(data?.items?.customOptions?.prdBackgroundColor),
+          );
+          setPrdBorderColor(
+            hexToHsb(data?.items?.customOptions?.prdBorderColor),
+          );
+          setprdBorderRadius(data?.items?.customOptions?.prdBorderRadius);
+          setbuttonBgColor(
+            hexToHsb(data?.items?.customOptions?.buttonBackgroundColor),
+          );
+          setbuttonTextColor(
+            hexToHsb(data?.items?.customOptions?.buttonTextColor),
+          );
+          setbuttonHoverColor(
+            hexToHsb(data?.items?.customOptions?.buttonHoverColor),
+          );
+          setbuttonTextSize(data?.items?.customOptions?.buttonTextSize);
+          setstaticImageRadius(data?.items?.customOptions?.staticImageRadius);
+          setheadingFontSize(data?.items?.customOptions?.headingFontSize);
+          setdescriptionFontSize(
+            data?.items?.customOptions?.descriptionFontSize,
+          );
+          setmarginTop(data?.items?.customOptions?.marginTop);
+          setMarginBottom(data?.items?.customOptions?.marginBottom);
+          setmarginLeft(data?.items?.customOptions?.marginLeft);
+          setmarginRight(data?.items?.customOptions?.marginRight);
+          setPaddingTop(data?.items?.customOptions?.paddingTop);
+          setPaddingBottom(data?.items?.customOptions?.paddingBottom);
+          setPaddingRight(data?.items?.customOptions?.paddingRight);
+          setPaddingLeft(data?.items?.customOptions?.paddingLeft);
+          setsliderArrowColor(
+            hexToHsb(data?.items?.customOptions?.sliderArrowColor),
+          );
+          setsliderNavigationColor(
+            hexToHsb(data?.items?.customOptions?.sliderNavigationColor),
+          );
+          setCustomCSS(data?.items?.customOptions?.customStyles);
+          setprdLimit(data?.items?.productLimit);
+          setArticleTitles(data?.items?.articleTitles);
+          setSelectedArticles(data?.items?.articleId);
+        }
+      });
+  };
+
+  useEffect(() => {
+    getEditData();
+  }, []);
 
   useEffect(() => {
     if (fetcher.data) {
@@ -226,7 +403,6 @@ export default function CategorySelector() {
   }, [fetcher.data]);
 
   useEffect(() => {
-    // Fetch product categories from Shopify
     fetch("/api/category")
       .then((res) => res.json())
       .then((data) => {
@@ -572,7 +748,9 @@ export default function CategorySelector() {
 
   console.log("selectBlog", selectBlog);
   return (
-    <Page title="Create Marketing Entry">
+    <Page
+      title={`${itemId ? "Edit Marketing Entry" : "Create Marketing Entry"}`}
+    >
       <Card roundedAbove="sm">
         <fetcher.Form method="post" encType="multipart/form-data">
           <br />
@@ -1521,6 +1699,7 @@ export default function CategorySelector() {
               <input type="hidden" name="paddingBottom" value={paddingBottom} />
               <input type="hidden" name="paddingLeft" value={paddingLeft} />
               <input type="hidden" name="paddingRight" value={paddingRight} />
+              <input type="hidden" name="existingId" value={String(itemId)} />
 
               <div
                 style={{
