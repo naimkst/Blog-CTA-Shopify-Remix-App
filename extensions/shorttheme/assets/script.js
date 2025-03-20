@@ -150,10 +150,26 @@ async function showData(paragraphClass, position, apiUrl) {
         case "1":
           return `
           <section class="product-area" style="background-color: ${item?.customOptions?.ctaCardBackgroundColor}; border-color: ${item.customOptions.ctaBorderColor};border-radius: ${item.customOptions.ctaBorderRadius}px;">
+          <style>
+          ${item?.customStyles}
+          button.owl-next {
+            background: ${item?.customOptions?.sliderNavigationColor} !important;
+          }
+          .product-area .product-wrap .owl-nav button span {
+              color: ${item?.customOptions?.sliderArrowColor} !important;
+          }
+          .product-area .product-wrap .owl-nav button:hover {
+              color: ${item?.customOptions?.sliderHoverIconColor} !important;
+              background: ${item?.customOptions?.sliderHoverBgColor} !important;
+          }
+          .product-area .product-wrap .owl-nav button:hover .product-area .product-wrap .owl-nav button span {
+            color: ${item?.customOptions?.sliderHoverIconColor} !important;
+          }
+        </style>
             <div class="my-container-fluid">
               <div class="section-title">
-                <h2 style="font-size: ${item?.customOptions?.headingFontSize}px">${item.headline}</h2>
-                <p style="font-size: ${item?.customOptions?.descriptionFontSize}px">${item.description}</p>
+                <h2 style="font-size: ${item?.customOptions?.headingFontSize}px; color: ${item?.customOptions?.headingTextColor}">${item.headline}</h2>
+                <p style="font-size: ${item?.customOptions?.descriptionFontSize}px; color: ${item?.customOptions?.descriptionColor}">${item.description}</p>
               </div>
               <div class="product-wrap product-slide">
                 <div class="row-grids product-active owl-carousel">
@@ -167,7 +183,7 @@ async function showData(paragraphClass, position, apiUrl) {
                             <img style="border-radius:${item?.customOptions?.staticImageRadius}px;" src="${product?.image?.src}" alt="${product.title}">
                           </div>
                           <div class="product-text">
-                            <h2><a href="/products/${product?.handle}">${product?.title}</a></h2>
+                            <h2><a style="color:${item?.customOptions?.prdTitleColor};font-size: ${item?.customOptions?.prdTitleSize}px" href="/products/${product?.handle}">${product?.title}</a></h2>
                           </div>
                           </a>
                         </div>

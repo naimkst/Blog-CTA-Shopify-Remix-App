@@ -79,6 +79,8 @@ export let action: ActionFunction = async ({ request }: any) => {
     const prdTitleColor = formData.get("prdTitleColor") || "";
     const prdTitleSize = formData.get("prdTitleSize") || "";
     const isThumbnail = formData.get("isThumbnail") || "";
+    const sliderHoverBgColor = formData.get("sliderHoverBgColor") || "";
+    const sliderHoverIconColor = formData.get("sliderHoverIconColor") || "";
 
     // Validate required fields
     if (!headline || !name || !position || !layout) {
@@ -127,53 +129,8 @@ export let action: ActionFunction = async ({ request }: any) => {
         status: "2",
         productLimit,
         customOptions: {
-          ctaCardBackgroundColor,
-          ctaBorderColor,
-          ctaBorderRadius,
-          prdBackgroundColor,
-          prdBorderColor,
-          prdBorderRadius,
-          buttonBackgroundColor,
-          buttonTextColor,
-          buttonHoverColor,
-          buttonTextSize,
-          staticImageRadius,
-          headingFontSize,
-          descriptionFontSize,
-          marginTop,
-          marginBottom,
-          marginLeft,
-          marginRight,
-          paddingTop,
-          paddingBottom,
-          paddingLeft,
-          paddingRight,
-          sliderArrowColor,
-          sliderNavigationColor,
-          customStyles,
-        },
-        customStyles,
-      },
-      create: {
-        id: uuidv4(), // Generate a new ID if creating
-        name,
-        headline,
-        description,
-        productHandle,
-        blogId,
-        position,
-        categoryId,
-        layout,
-        productsId,
-        shop: data.session.shop || "",
-        thumbnail: imageName ? imageName : isThumbnail,
-        buttonLink,
-        buttonText,
-        articleTitles,
-        articleId,
-        status: "2",
-        productLimit,
-        customOptions: {
+          sliderHoverBgColor,
+          sliderHoverIconColor,
           headingTextColor,
           descriptionColor,
           prdTitleColor,
@@ -201,7 +158,58 @@ export let action: ActionFunction = async ({ request }: any) => {
           paddingRight,
           sliderArrowColor,
           sliderNavigationColor,
-          customStyles,
+        },
+        customStyles,
+      },
+      create: {
+        id: uuidv4(), // Generate a new ID if creating
+        name,
+        headline,
+        description,
+        productHandle,
+        blogId,
+        position,
+        categoryId,
+        layout,
+        productsId,
+        shop: data.session.shop || "",
+        thumbnail: imageName ? imageName : isThumbnail,
+        buttonLink,
+        buttonText,
+        articleTitles,
+        articleId,
+        status: "2",
+        productLimit,
+        customOptions: {
+          sliderHoverBgColor,
+          sliderHoverIconColor,
+          headingTextColor,
+          descriptionColor,
+          prdTitleColor,
+          prdTitleSize,
+          ctaCardBackgroundColor,
+          ctaBorderColor,
+          ctaBorderRadius,
+          prdBackgroundColor,
+          prdBorderColor,
+          prdBorderRadius,
+          buttonBackgroundColor,
+          buttonTextColor,
+          buttonHoverColor,
+          buttonTextSize,
+          staticImageRadius,
+          headingFontSize,
+          descriptionFontSize,
+          marginTop,
+          marginBottom,
+          marginLeft,
+          marginRight,
+          paddingTop,
+          paddingBottom,
+          paddingLeft,
+          paddingRight,
+          sliderArrowColor,
+          sliderNavigationColor,
         },
         customStyles,
       },
@@ -393,6 +401,12 @@ export default function CategorySelector() {
             hexToHsb(data?.items?.customOptions?.prdTitleColor),
           );
           setPrdTitleSize(data?.items?.customOptions?.prdTitleSize);
+          setSliderHoverBgColor(
+            hexToHsb(data?.items?.customOptions?.setSliderHoverBgColor),
+          );
+          setSliderHoverIconColor(
+            hexToHsb(data?.items?.customOptions?.sliderHoverIconColor),
+          );
         }
       });
   };
@@ -643,6 +657,18 @@ export default function CategorySelector() {
   });
 
   const [sliderNavigationColor, setsliderNavigationColor] = useState({
+    hue: 300,
+    brightness: 1,
+    saturation: 0.7,
+    alpha: 0.7,
+  });
+  const [sliderHoverBgColor, setSliderHoverBgColor] = useState({
+    hue: 300,
+    brightness: 1,
+    saturation: 0.7,
+    alpha: 0.7,
+  });
+  const [sliderHoverIconColor, setSliderHoverIconColor] = useState({
     hue: 300,
     brightness: 1,
     saturation: 0.7,
@@ -1707,7 +1733,7 @@ export default function CategorySelector() {
                   <FormLayout.Group>
                     <div
                       style={{
-                        width: "100%",
+                        width: "200px",
                         display: "flex",
                         gap: "10px",
                         flexDirection: "column",
@@ -1729,7 +1755,7 @@ export default function CategorySelector() {
 
                     <div
                       style={{
-                        width: "100%",
+                        width: "200px",
                         display: "flex",
                         gap: "10px",
                         flexDirection: "column",
@@ -1745,6 +1771,50 @@ export default function CategorySelector() {
                         value={hsbToHex(sliderNavigationColor)}
                         name="sliderNavigationColor"
                         placeholder="Slider Icon color"
+                        autoComplete="off"
+                      />
+                    </div>
+
+                    <div
+                      style={{
+                        width: "200px",
+                        display: "flex",
+                        gap: "10px",
+                        flexDirection: "column",
+                      }}
+                    >
+                      <label htmlFor="">Slider Hover Background color</label>
+                      <ColorPicker
+                        onChange={setSliderHoverBgColor}
+                        color={sliderHoverBgColor}
+                      />
+                      <TextField
+                        label=""
+                        value={hsbToHex(sliderHoverBgColor)}
+                        name="sliderHoverBgColor"
+                        placeholder="Slider Hover Background Color"
+                        autoComplete="off"
+                      />
+                    </div>
+
+                    <div
+                      style={{
+                        width: "200px",
+                        display: "flex",
+                        gap: "10px",
+                        flexDirection: "column",
+                      }}
+                    >
+                      <label htmlFor="">Slider Hover Icon color</label>
+                      <ColorPicker
+                        onChange={setSliderHoverIconColor}
+                        color={sliderHoverIconColor}
+                      />
+                      <TextField
+                        label=""
+                        value={hsbToHex(sliderHoverIconColor)}
+                        name="sliderHoverIconColor"
+                        placeholder="Slider Hover Icon Color"
                         autoComplete="off"
                       />
                     </div>
