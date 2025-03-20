@@ -149,11 +149,11 @@ async function showData(paragraphClass, position, apiUrl) {
       switch (item.layout) {
         case "1":
           return `
-          <section class="product-area" style="background-color: ${item.customOptions.ctaCardBackgroundColor}">
+          <section class="product-area" style="background-color: ${item?.customOptions?.ctaCardBackgroundColor}; border-color: ${item.customOptions.ctaBorderColor};border-radius: ${item.customOptions.ctaBorderRadius}px;">
             <div class="my-container-fluid">
               <div class="section-title">
-                <h2>${item.headline}</h2>
-                <p>${item.description}</p>
+                <h2 style="font-size: ${item?.customOptions?.headingFontSize}px">${item.headline}</h2>
+                <p style="font-size: ${item?.customOptions?.descriptionFontSize}px">${item.description}</p>
               </div>
               <div class="product-wrap product-slide">
                 <div class="row-grids product-active owl-carousel">
@@ -164,7 +164,7 @@ async function showData(paragraphClass, position, apiUrl) {
                         <div class="product-item">
                         <a href="/products/${product?.handle}">
                           <div class="product-img">
-                            <img src="${product?.image?.src}" alt="${product.title}">
+                            <img style="border-radius:${item?.customOptions?.staticImageRadius}px;" src="${product?.image?.src}" alt="${product.title}">
                           </div>
                           <div class="product-text">
                             <h2><a href="/products/${product?.handle}">${product?.title}</a></h2>

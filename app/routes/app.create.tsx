@@ -1,8 +1,7 @@
-import { useState, useEffect, useMemo, useCallback } from "react";
-import { useFetcher, useParams, useSearchParams } from "@remix-run/react";
+import { useState, useEffect, useCallback } from "react";
+import { useFetcher, useSearchParams } from "@remix-run/react";
 import {
   Autocomplete,
-  BlockStack,
   Button,
   Card,
   FormLayout,
@@ -11,7 +10,6 @@ import {
   Page,
   RadioButton,
   Select,
-  Spinner,
   Tag,
   TextField,
   Tabs,
@@ -19,19 +17,12 @@ import {
   ColorPicker,
   hsbToHex,
   RangeSlider,
-  Layout,
-  Form,
-  DropZone,
-  Thumbnail,
-  Text,
 } from "@shopify/polaris";
 import { ActionFunction, json, redirect } from "@remix-run/node";
-import { cors } from "remix-utils/cors";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { v4 as uuidv4 } from "uuid";
 import { authenticate } from "app/shopify.server";
-import { NoteIcon } from "@shopify/polaris-icons";
 import path from "path";
 import { Buffer } from "buffer";
 import { writeFile } from "fs/promises";
@@ -50,7 +41,6 @@ export let action: ActionFunction = async ({ request }: any) => {
     const layout = formData.get("layout");
     const categoryId = formData.get("categoryId");
     const productHandle = formData.get("productHandle");
-    const thumbnail = formData.get("thumbnail");
     const buttonLink = formData.get("buttonLink");
     const buttonText = formData.get("buttonText");
     const productsId = formData.get("productId") || "";
@@ -84,6 +74,11 @@ export let action: ActionFunction = async ({ request }: any) => {
     const sliderNavigationColor = formData.get("sliderNavigationColor") || "";
     const customStyles = formData.get("customStyles") || "";
     const existingId = formData.get("existingId") || "";
+    const headingTextColor = formData.get("headingTextColor") || "";
+    const descriptionColor = formData.get("descriptionColor") || "";
+    const prdTitleColor = formData.get("prdTitleColor") || "";
+    const prdTitleSize = formData.get("prdTitleSize") || "";
+    const isThumbnail = formData.get("isThumbnail") || "";
 
     // Validate required fields
     if (!headline || !name || !position || !layout) {
@@ -94,7 +89,7 @@ export let action: ActionFunction = async ({ request }: any) => {
     }
 
     let imageName = "";
-    if (file) {
+    if (file && file.size > 0) {
       // ✅ Convert file to a Buffer
       function sanitizeFileName(fileName: string) {
         return fileName
@@ -124,7 +119,7 @@ export let action: ActionFunction = async ({ request }: any) => {
         layout,
         productsId,
         shop: data.session.shop || "",
-        thumbnail: imageName || "",
+        thumbnail: imageName ? imageName : isThumbnail,
         buttonLink,
         buttonText,
         articleTitles,
@@ -171,7 +166,7 @@ export let action: ActionFunction = async ({ request }: any) => {
         layout,
         productsId,
         shop: data.session.shop || "",
-        thumbnail: imageName || "",
+        thumbnail: imageName ? imageName : isThumbnail,
         buttonLink,
         buttonText,
         articleTitles,
@@ -179,6 +174,10 @@ export let action: ActionFunction = async ({ request }: any) => {
         status: "2",
         productLimit,
         customOptions: {
+          headingTextColor,
+          descriptionColor,
+          prdTitleColor,
+          prdTitleSize,
           ctaCardBackgroundColor,
           ctaBorderColor,
           ctaBorderRadius,
@@ -238,7 +237,7 @@ export let action: ActionFunction = async ({ request }: any) => {
 
 export default function CategorySelector() {
   const [products, setProducts] = useState([]);
-  const [editData, setEditData] = useState(null);
+  const [editData, setEditData] = useState<any>(null);
   const [blogs, setBlogs] = useState([]);
   const [blogId, setBlogId] = useState("");
   const [selectBlog, setSelectBlog] = useState<any>(null);
@@ -384,6 +383,16 @@ export default function CategorySelector() {
           setprdLimit(data?.items?.productLimit);
           setArticleTitles(data?.items?.articleTitles);
           setSelectedArticles(data?.items?.articleId);
+          setHeadingColor(
+            hexToHsb(data?.items?.customOptions?.headingTextColor),
+          );
+          setDescriptionColor(
+            hexToHsb(data?.items?.customOptions?.descriptionColor),
+          );
+          setProductTitleColor(
+            hexToHsb(data?.items?.customOptions?.prdTitleColor),
+          );
+          setPrdTitleSize(data?.items?.customOptions?.prdTitleSize);
         }
       });
   };
@@ -581,6 +590,12 @@ export default function CategorySelector() {
     saturation: 0.7,
     alpha: 0.7,
   });
+  const [prdTitleColor, setProductTitleColor] = useState({
+    hue: 300,
+    brightness: 1,
+    saturation: 0.7,
+    alpha: 0.7,
+  });
   const [buttonBgColor, setbuttonBgColor] = useState({
     hue: 300,
     brightness: 1,
@@ -589,6 +604,18 @@ export default function CategorySelector() {
   });
 
   const [buttonTextColor, setbuttonTextColor] = useState({
+    hue: 300,
+    brightness: 1,
+    saturation: 0.7,
+    alpha: 0.7,
+  });
+  const [headingTextColor, setHeadingColor] = useState({
+    hue: 300,
+    brightness: 1,
+    saturation: 0.7,
+    alpha: 0.7,
+  });
+  const [descriptionColor, setDescriptionColor] = useState({
     hue: 300,
     brightness: 1,
     saturation: 0.7,
@@ -633,6 +660,13 @@ export default function CategorySelector() {
 
   const productBorderHandle = useCallback(
     (value: number) => setprdBorderRadius(value),
+    [],
+  );
+
+  const [prdTitleSize, setPrdTitleSize] = useState(10);
+
+  const prdTitleSizeHandle = useCallback(
+    (value: number) => setPrdTitleSize(value),
     [],
   );
 
@@ -1184,6 +1218,27 @@ export default function CategorySelector() {
                         autoComplete="off"
                       />
                     </div>
+                    <div
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: "20px",
+                        width: "100%",
+                      }}
+                    >
+                      <label htmlFor="">Product Title color</label>
+                      <ColorPicker
+                        onChange={setProductTitleColor}
+                        color={prdTitleColor}
+                      />
+                      <TextField
+                        label=""
+                        value={hsbToHex(prdTitleColor)}
+                        name="prdTitleColor"
+                        placeholder="Product Title color"
+                        autoComplete="off"
+                      />
+                    </div>
 
                     <div
                       style={{
@@ -1208,24 +1263,45 @@ export default function CategorySelector() {
                     </div>
                   </FormLayout.Group>
 
-                  <RangeSlider
-                    output
-                    label="Product card border radius"
-                    min={0}
-                    max={360}
-                    value={prdBorderRadius}
-                    onChange={productBorderHandle}
-                    suffix={
-                      <p
-                        style={{
-                          minWidth: "24px",
-                          textAlign: "right",
-                        }}
-                      >
-                        {prdBorderRadius}px
-                      </p>
-                    }
-                  />
+                  <FormLayout.Group>
+                    <RangeSlider
+                      output
+                      label="Product card border radius"
+                      min={0}
+                      max={360}
+                      value={prdBorderRadius}
+                      onChange={productBorderHandle}
+                      suffix={
+                        <p
+                          style={{
+                            minWidth: "24px",
+                            textAlign: "right",
+                          }}
+                        >
+                          {prdBorderRadius}px
+                        </p>
+                      }
+                    />
+
+                    <RangeSlider
+                      output
+                      label="Product Title Size"
+                      min={0}
+                      max={360}
+                      value={prdTitleSize}
+                      onChange={prdTitleSizeHandle}
+                      suffix={
+                        <p
+                          style={{
+                            minWidth: "24px",
+                            textAlign: "right",
+                          }}
+                        >
+                          {prdTitleSize}px
+                        </p>
+                      }
+                    />
+                  </FormLayout.Group>
                 </FormLayout>
               </div>
 
@@ -1358,42 +1434,89 @@ export default function CategorySelector() {
               >
                 <FormLayout>
                   <FormLayout.Group>
-                    <RangeSlider
-                      output
-                      label="Heading Font Size"
-                      min={0}
-                      max={360}
-                      value={headingFontSize}
-                      onChange={headingFontSizeHanlde}
-                      suffix={
-                        <p
-                          style={{
-                            minWidth: "24px",
-                            textAlign: "right",
-                          }}
-                        >
-                          {headingFontSize}px
-                        </p>
-                      }
-                    />
-                    <RangeSlider
-                      output
-                      label="Description Font Size"
-                      min={0}
-                      max={360}
-                      value={descriptionFontSize}
-                      onChange={descriptionFontSizeHandle}
-                      suffix={
-                        <p
-                          style={{
-                            minWidth: "24px",
-                            textAlign: "right",
-                          }}
-                        >
-                          {descriptionFontSize}px
-                        </p>
-                      }
-                    />
+                    <div>
+                      <div
+                        style={{
+                          display: "flex",
+                          gap: "10px",
+                          flexDirection: "column",
+                          marginBottom: "20px",
+                        }}
+                      >
+                        <label htmlFor="">Heading Text Color</label>
+                        <ColorPicker
+                          onChange={setHeadingColor}
+                          color={headingTextColor}
+                        />
+                        <TextField
+                          label=""
+                          value={hsbToHex(headingTextColor)}
+                          name="headingTextColor"
+                          placeholder="Heading Text color"
+                          autoComplete="off"
+                        />
+                      </div>
+                      <RangeSlider
+                        output
+                        label="Heading Font Size"
+                        min={0}
+                        max={360}
+                        value={headingFontSize}
+                        onChange={headingFontSizeHanlde}
+                        suffix={
+                          <p
+                            style={{
+                              minWidth: "24px",
+                              textAlign: "right",
+                            }}
+                          >
+                            {headingFontSize}px
+                          </p>
+                        }
+                      />
+                    </div>
+                    <div>
+                      <div
+                        style={{
+                          display: "flex",
+                          gap: "10px",
+                          flexDirection: "column",
+                          marginBottom: "20px",
+                        }}
+                      >
+                        <label htmlFor="">Description Text Color</label>
+                        <ColorPicker
+                          onChange={setDescriptionColor}
+                          color={descriptionColor}
+                        />
+                        <TextField
+                          label=""
+                          value={hsbToHex(descriptionColor)}
+                          name="descriptionColor"
+                          placeholder="Description Text color"
+                          autoComplete="off"
+                        />
+                      </div>
+
+                      <RangeSlider
+                        output
+                        label="Description Font Size"
+                        min={0}
+                        max={360}
+                        value={descriptionFontSize}
+                        onChange={descriptionFontSizeHandle}
+                        suffix={
+                          <p
+                            style={{
+                              minWidth: "24px",
+                              textAlign: "right",
+                            }}
+                          >
+                            {descriptionFontSize}px
+                          </p>
+                        }
+                      />
+                    </div>
                   </FormLayout.Group>
                 </FormLayout>
               </div>
@@ -1700,6 +1823,14 @@ export default function CategorySelector() {
               <input type="hidden" name="paddingLeft" value={paddingLeft} />
               <input type="hidden" name="paddingRight" value={paddingRight} />
               <input type="hidden" name="existingId" value={String(itemId)} />
+              <input type="hidden" name="prdTitleSize" value={prdTitleSize} />
+              {editData && (
+                <input
+                  type="hidden"
+                  name="isThumbnail"
+                  value={editData.thumbnail}
+                />
+              )}
 
               <div
                 style={{
