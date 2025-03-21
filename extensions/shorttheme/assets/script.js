@@ -145,6 +145,13 @@ async function showData(paragraphClass, position, apiUrl) {
     // Function to generate dynamic layouts
     const getLayout = (item) => {
       const products = categoryProducts[item.categoryId] || [];
+      const productLimit = item.productLimit
+        ? Number(item.productLimit)
+        : products.length;
+
+      const limitedProducts = products.slice(0, productLimit);
+
+      console.log("item=====:", item);
 
       switch (item.layout) {
         case "1":
@@ -172,8 +179,8 @@ async function showData(paragraphClass, position, apiUrl) {
                 <p style="font-size: ${item?.customOptions?.descriptionFontSize}px; color: ${item?.customOptions?.descriptionColor}">${item.description}</p>
               </div>
               <div class="product-wrap product-slide">
-                <div class="row-grids product-active owl-carousel">
-                  ${products
+                <div class="row-grids owl-carousel ${productLimit > 3 ? "product-active" : ""}">
+                  ${limitedProducts
                     .map(
                       (product) => `
                       <div class="grid">

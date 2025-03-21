@@ -5,9 +5,27 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useNavigation,
 } from "@remix-run/react";
+import { useEffect, useState } from "react";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { Spinner } from "@shopify/polaris";
 
 export default function App() {
+  const navigation = useNavigation();
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (navigation.state === "loading") {
+      setLoading(true);
+    } else {
+      setLoading(false);
+    }
+  }, [navigation.state]);
+
+  console.log("transition===", navigation.state);
+
   return (
     <html>
       <head>
@@ -23,9 +41,25 @@ export default function App() {
         <Links />
       </head>
       <body>
-        <Outlet />
-        <ScrollRestoration />
-        <Scripts />
+        {loading ? (
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              height: "90vh",
+            }}
+          >
+            <Spinner accessibilityLabel="Spinner example" size="large" />
+          </div>
+        ) : (
+          <>
+            <ToastContainer position="top-right" autoClose={3000} />
+            <Outlet />
+            <ScrollRestoration />
+            <Scripts />
+          </>
+        )}
       </body>
     </html>
   );

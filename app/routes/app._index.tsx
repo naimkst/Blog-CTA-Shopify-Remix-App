@@ -74,8 +74,6 @@ export default function Index() {
     );
   }
 
-  console.log("reviews=====", reviews);
-
   return (
     <Page fullWidth>
       <Box background="bg-surface">

@@ -1,5 +1,10 @@
 import { useState, useEffect, useCallback } from "react";
-import { useFetcher, useSearchParams } from "@remix-run/react";
+import {
+  Navigate,
+  useFetcher,
+  useSearchParams,
+  useNavigate,
+} from "@remix-run/react";
 import {
   Autocomplete,
   Button,
@@ -225,10 +230,12 @@ export let action: ActionFunction = async ({ request }: any) => {
       },
       { status: 201 },
     );
-    if (response.status === 201) {
-      return response;
-    }
-    return redirect("/", { status: 302 });
+
+    return response;
+    // if (response) {
+    //   return redirect("/app"); // ✅ Redirects to the app home page
+    // }
+
     // return await cors(request, response);
   } catch (error: any) {
     console.error("Error saving data:", error);
@@ -270,6 +277,7 @@ export default function CategorySelector() {
   const [loading, setLoading] = useState<boolean>(false);
 
   const fetcher = useFetcher<any>();
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const itemId = searchParams.get("id");
 
@@ -419,7 +427,8 @@ export default function CategorySelector() {
     if (fetcher.data) {
       if (fetcher?.data?.success) {
         toast.success("Data saved successfully!");
-      } else {
+        navigate("/app");
+      } else if (fetcher.data?.success === false) {
         toast.error("Error saving data");
       }
     }
@@ -806,7 +815,6 @@ export default function CategorySelector() {
     (document.getElementById("file-input") as HTMLInputElement).value = "";
   };
 
-  console.log("selectBlog", selectBlog);
   return (
     <Page
       title={`${itemId ? "Edit Marketing Entry" : "Create Marketing Entry"}`}
