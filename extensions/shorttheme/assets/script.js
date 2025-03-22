@@ -74,6 +74,10 @@ function initializeOwlCarousel() {
 
 async function showData(paragraphClass, position, apiUrl) {
   const blogId = document.getElementById("blogId").value;
+  const gid = document.getElementById("collectionId").value;
+  const collectionId = gid.split("/").pop();
+
+  console.log("Collection ID:", collectionId);
 
   console.log("Blog ID:", blogId);
   let mergedData = [];
@@ -107,17 +111,21 @@ async function showData(paragraphClass, position, apiUrl) {
     // Merge Data: Keep items from `itemById` and `items` (avoiding duplicates)
     mergedData = [
       ...dataById,
-      ...dataAllItems.filter((item) => !item.blogId || item.blogId === blogId),
+      ...dataAllItems.filter(
+        (item) => !item?.blogId || item?.blogId === blogId,
+      ),
     ];
 
     mergedData = mergedData.filter(
-      (item, index, self) => index === self.findIndex((t) => t.id === item.id),
+      (item, index, self) => index === self.findIndex((t) => t.id === item?.id),
     );
 
     console.log("Merged Data:", mergedData);
 
     // Fetch Category Data for each unique `categoryId`
-    const categoryIds = [...new Set(mergedData.map((item) => item.categoryId))];
+    const categoryIds = [
+      ...new Set(mergedData.map((item) => item?.categoryId)),
+    ];
 
     let categoryProducts = {};
     for (let categoryId of categoryIds) {
@@ -144,22 +152,25 @@ async function showData(paragraphClass, position, apiUrl) {
 
     // Function to generate dynamic layouts
     const getLayout = (item) => {
-      const products = categoryProducts[item.categoryId] || [];
-      const productLimit = item.productLimit
-        ? Number(item.productLimit)
+      const products = categoryProducts[item?.categoryId] || [];
+      const productLimit = item?.productLimit
+        ? Number(item?.productLimit)
         : products.length;
 
       const limitedProducts = products.slice(0, productLimit);
 
       console.log("item=====:", item);
 
-      switch (item.layout) {
+      switch (item?.layout) {
         case "1":
           return `
-          <section class="product-area" style="background-color: ${item?.customOptions?.ctaCardBackgroundColor}; border-color: ${item.customOptions.ctaBorderColor};border-radius: ${item.customOptions.ctaBorderRadius}px;">
+          <section class="product-area" style="background-color: ${item?.customOptions?.ctaCardBackgroundColor}; border-color: ${item?.customOptions?.ctaBorderColor};border-radius: ${item?.customOptions?.ctaBorderRadius}px; padding-top: ${item?.customOptions?.paddingTop}px; padding-bottom: ${item?.customOptions?.paddingBottom}px; padding-left: ${item?.customOptions?.paddingLeft}px; padding-right: ${item?.customOptions?.paddingRight}px; margin-top: ${item?.customOptions?.marginTop}px; margin-bottom: ${item?.customOptions?.marginBottom}px; margin-left: ${item?.customOptions?.marginLeft}px; margin-right: ${item?.customOptions?.marginRight}px; border-width: ${item?.customOptions?.ctaBorderBorderSize}px; border-style: solid; border-color: ${item?.customOptions?.ctaBorderColor};">
           <style>
           ${item?.customStyles}
           button.owl-next {
+            background: ${item?.customOptions?.sliderNavigationColor} !important;
+          }
+          .product-wrap .owl-nav button{
             background: ${item?.customOptions?.sliderNavigationColor} !important;
           }
           .product-area .product-wrap .owl-nav button span {
@@ -172,19 +183,25 @@ async function showData(paragraphClass, position, apiUrl) {
           .product-area .product-wrap .owl-nav button:hover .product-area .product-wrap .owl-nav button span {
             color: ${item?.customOptions?.sliderHoverIconColor} !important;
           }
+          button.owl-next:hover span {
+              color: ${item?.customOptions?.sliderHoverIconColor} !important;
+          }
+          .product-area .product-wrap .owl-nav button:hover span {
+              color: ${item?.customOptions?.sliderHoverIconColor} !important;
+          }
         </style>
             <div class="my-container-fluid">
               <div class="section-title">
-                <h2 style="font-size: ${item?.customOptions?.headingFontSize}px; color: ${item?.customOptions?.headingTextColor}">${item.headline}</h2>
-                <p style="font-size: ${item?.customOptions?.descriptionFontSize}px; color: ${item?.customOptions?.descriptionColor}">${item.description}</p>
+               <h2 style="font-size: ${item?.customOptions?.headingFontSize}px; color: ${item?.customOptions?.headingTextColor}">${item?.headline}</h2>
+                <p style="font-size: ${item?.customOptions?.descriptionFontSize}px; color: ${item?.customOptions?.descriptionColor}">${item?.description}</p>
               </div>
               <div class="product-wrap product-slide">
                 <div class="row-grids owl-carousel ${productLimit > 3 ? "product-active" : ""}">
                   ${limitedProducts
                     .map(
                       (product) => `
-                      <div class="grid">
-                        <div class="product-item">
+                      <div class="grid" style="">
+                        <div class="product-item" style="border-radius: ${item?.customOptions?.prdBorderRadius}px;background: ${item?.customOptions?.prdBackgroundColor}; border: ${item?.customOptions?.prdTBorderSize}px solid ${item?.customOptions?.prdBorderColor};">
                         <a href="/products/${product?.handle}">
                           <div class="product-img">
                             <img style="border-radius:${item?.customOptions?.staticImageRadius}px;" src="${product?.image?.src}" alt="${product.title}">
@@ -203,11 +220,11 @@ async function showData(paragraphClass, position, apiUrl) {
             </div>
           </section>`;
         case "2":
-          return `<h1>Layout Two</h1><h2>${item.headline}</h2><p>${item.description}</p>`;
+          return `<h1>Layout Two</h1><h2>${item?.headline}</h2><p>${item?.description}</p>`;
         case "3":
-          return `<h1>Layout Three</h1><h2>${item.headline}</h2><p>${item.description}</p>`;
+          return `<h1>Layout Three</h1><h2>${item?.headline}</h2><p>${item?.description}</p>`;
         case "4":
-          return `<h1>Layout Four</h1><h2>${item.headline}</h2><p>${item.description}</p>`;
+          return `<h1>Layout Four</h1><h2>${item?.headline}</h2><p>${item?.description}</p>`;
         default:
           return null;
       }
@@ -229,17 +246,17 @@ async function showData(paragraphClass, position, apiUrl) {
 
     // Insert multiple layouts based on their positions
     mergedData.forEach((item) => {
-      console.log("Item data====:", item.layout, item.position);
+      console.log("Item data====:", item?.layout, item?.position);
 
-      if (sentences.length / 2 < Number(item.position)) {
+      if (sentences.length / 2 < Number(item?.position)) {
         console.warn(
           "Paragraph does not contain enough sentences for position:",
-          item.position,
+          item?.position,
         );
         return;
       }
 
-      const insertionIndex = Number(item.position) * 2;
+      const insertionIndex = Number(item?.position) * 2;
       const layout = getLayout(item);
 
       if (layout) {

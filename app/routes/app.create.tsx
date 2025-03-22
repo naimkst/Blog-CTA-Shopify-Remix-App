@@ -86,6 +86,8 @@ export let action: ActionFunction = async ({ request }: any) => {
     const isThumbnail = formData.get("isThumbnail") || "";
     const sliderHoverBgColor = formData.get("sliderHoverBgColor") || "";
     const sliderHoverIconColor = formData.get("sliderHoverIconColor") || "";
+    const ctaBorderBorderSize = formData.get("ctaBorderBorderSize") || "";
+    const prdTBorderSize = formData.get("prdTBorderSize") || "";
 
     // Validate required fields
     if (!headline || !name || !position || !layout) {
@@ -135,6 +137,8 @@ export let action: ActionFunction = async ({ request }: any) => {
         productLimit,
         customOptions: {
           sliderHoverBgColor,
+          prdTBorderSize,
+          ctaBorderBorderSize,
           sliderHoverIconColor,
           headingTextColor,
           descriptionColor,
@@ -187,7 +191,9 @@ export let action: ActionFunction = async ({ request }: any) => {
         productLimit,
         customOptions: {
           sliderHoverBgColor,
+          prdTBorderSize,
           sliderHoverIconColor,
+          ctaBorderBorderSize,
           headingTextColor,
           descriptionColor,
           prdTitleColor,
@@ -415,6 +421,10 @@ export default function CategorySelector() {
           setSliderHoverIconColor(
             hexToHsb(data?.items?.customOptions?.sliderHoverIconColor),
           );
+          setCtaBorderBorderSize(
+            data?.items?.customOptions?.ctaBorderBorderSize,
+          );
+          setPrdTBorderSize(data?.items?.customOptions?.prdTBorderSize);
         }
       });
   };
@@ -595,113 +605,126 @@ export default function CategorySelector() {
   ];
 
   const [color, setColor] = useState({
-    hue: 300,
+    hue: 0,
     brightness: 1,
-    saturation: 0.7,
-    alpha: 0.7,
+    saturation: 0,
+    alpha: 1,
   });
   const [ctaBorderColor, setCTAborder] = useState({
-    hue: 300,
-    brightness: 1,
-    saturation: 0.7,
-    alpha: 0.7,
+    hue: 0,
+    brightness: 0,
+    saturation: 0,
+    alpha: 1,
   });
 
   const [prdBgColor, setPrdBGColor] = useState({
-    hue: 300,
+    hue: 0,
     brightness: 1,
-    saturation: 0.7,
-    alpha: 0.7,
+    saturation: 0,
+    alpha: 1,
   });
   const [prdTitleColor, setProductTitleColor] = useState({
-    hue: 300,
-    brightness: 1,
-    saturation: 0.7,
-    alpha: 0.7,
+    hue: 0,
+    brightness: 0,
+    saturation: 0,
+    alpha: 1,
   });
   const [buttonBgColor, setbuttonBgColor] = useState({
-    hue: 300,
-    brightness: 1,
-    saturation: 0.7,
-    alpha: 0.7,
+    hue: 0,
+    brightness: 0,
+    saturation: 0,
+    alpha: 1,
   });
 
   const [buttonTextColor, setbuttonTextColor] = useState({
-    hue: 300,
+    hue: 0,
     brightness: 1,
-    saturation: 0.7,
-    alpha: 0.7,
+    saturation: 0,
+    alpha: 1,
   });
   const [headingTextColor, setHeadingColor] = useState({
-    hue: 300,
-    brightness: 1,
-    saturation: 0.7,
-    alpha: 0.7,
+    hue: 0,
+    brightness: 0,
+    saturation: 0,
+    alpha: 1,
   });
   const [descriptionColor, setDescriptionColor] = useState({
-    hue: 300,
-    brightness: 1,
-    saturation: 0.7,
-    alpha: 0.7,
+    hue: 0,
+    brightness: 0,
+    saturation: 0,
+    alpha: 1,
   });
   const [buttonHoverColor, setbuttonHoverColor] = useState({
-    hue: 300,
-    brightness: 1,
-    saturation: 0.7,
-    alpha: 0.7,
+    hue: 0,
+    brightness: 0,
+    saturation: 0,
+    alpha: 1,
   });
 
   const [prdBorderColor, setPrdBorderColor] = useState({
-    hue: 300,
-    brightness: 1,
-    saturation: 0.7,
-    alpha: 0.7,
+    hue: 0,
+    brightness: 0,
+    saturation: 0,
+    alpha: 1,
   });
 
   const [sliderArrowColor, setsliderArrowColor] = useState({
-    hue: 300,
+    hue: 0,
     brightness: 1,
-    saturation: 0.7,
-    alpha: 0.7,
+    saturation: 0,
+    alpha: 1,
   });
 
   const [sliderNavigationColor, setsliderNavigationColor] = useState({
-    hue: 300,
-    brightness: 1,
-    saturation: 0.7,
-    alpha: 0.7,
+    hue: 0,
+    brightness: 0,
+    saturation: 0,
+    alpha: 1,
   });
   const [sliderHoverBgColor, setSliderHoverBgColor] = useState({
-    hue: 300,
-    brightness: 1,
-    saturation: 0.7,
-    alpha: 0.7,
+    hue: 0,
+    brightness: 0,
+    saturation: 0,
+    alpha: 1,
   });
   const [sliderHoverIconColor, setSliderHoverIconColor] = useState({
-    hue: 300,
+    hue: 0,
     brightness: 1,
-    saturation: 0.7,
-    alpha: 0.7,
+    saturation: 0,
+    alpha: 1,
   });
 
-  const [ctaBorderRadius, setctaBorderRadius] = useState(10);
+  const [ctaBorderRadius, setctaBorderRadius] = useState(0);
 
   const handleRangeSliderChange = useCallback(
     (value: number) => setctaBorderRadius(value),
     [],
   );
 
-  const [prdBorderRadius, setprdBorderRadius] = useState(10);
+  const [ctaBorderBorderSize, setCtaBorderBorderSize] = useState(0);
+
+  const ctaBorderBorderSizeHandle = useCallback(
+    (value: number) => setCtaBorderBorderSize(value),
+    [],
+  );
+
+  const [prdBorderRadius, setprdBorderRadius] = useState(0);
 
   const productBorderHandle = useCallback(
     (value: number) => setprdBorderRadius(value),
     [],
   );
 
-  const [prdTitleSize, setPrdTitleSize] = useState(10);
+  const [prdTitleSize, setPrdTitleSize] = useState(12);
 
   const prdTitleSizeHandle = useCallback(
     (value: number) => setPrdTitleSize(value),
+    [],
+  );
+  const [prdTBorderSize, setPrdTBorderSize] = useState(0);
+
+  const prdTBorderSizeHandle = useCallback(
+    (value: number) => setPrdTBorderSize(value),
     [],
   );
 
@@ -712,14 +735,14 @@ export default function CategorySelector() {
     [],
   );
 
-  const [staticImageRadius, setstaticImageRadius] = useState(14);
+  const [staticImageRadius, setstaticImageRadius] = useState(0);
 
   const staticImageRadiusHandle = useCallback(
     (value: number) => setstaticImageRadius(value),
     [],
   );
 
-  const [headingFontSize, setheadingFontSize] = useState(14);
+  const [headingFontSize, setheadingFontSize] = useState(20);
 
   const headingFontSizeHanlde = useCallback(
     (value: number) => setheadingFontSize(value),
@@ -740,54 +763,54 @@ export default function CategorySelector() {
     [],
   );
 
-  const [marginTop, setmarginTop] = useState(14);
+  const [marginTop, setmarginTop] = useState(0);
 
   const setmarginTopHandle = useCallback(
     (value: number) => setmarginTop(value),
     [],
   );
 
-  const [marginBottom, setMarginBottom] = useState(14);
+  const [marginBottom, setMarginBottom] = useState(0);
 
   const marginBottomHandle = useCallback(
     (value: number) => setMarginBottom(value),
     [],
   );
-  const [marginLeft, setmarginLeft] = useState(14);
+  const [marginLeft, setmarginLeft] = useState(0);
 
   const setmarginLeftHandle = useCallback(
     (value: number) => setmarginLeft(value),
     [],
   );
-  const [marginRight, setmarginRight] = useState(14);
+  const [marginRight, setmarginRight] = useState(0);
 
   const marginRightHandle = useCallback(
     (value: number) => setmarginRight(value),
     [],
   );
 
-  const [paddingTop, setPaddingTop] = useState(14);
+  const [paddingTop, setPaddingTop] = useState(0);
 
   const paddingTopHanlde = useCallback(
     (value: number) => setPaddingTop(value),
     [],
   );
 
-  const [paddingBottom, setPaddingBottom] = useState(14);
+  const [paddingBottom, setPaddingBottom] = useState(0);
 
   const paddingBottomHandle = useCallback(
     (value: number) => setPaddingBottom(value),
     [],
   );
 
-  const [paddingRight, setPaddingRight] = useState(14);
+  const [paddingRight, setPaddingRight] = useState(0);
 
   const paddingRightHandle = useCallback(
     (value: number) => setPaddingRight(value),
     [],
   );
 
-  const [paddingLeft, setPaddingLeft] = useState(14);
+  const [paddingLeft, setPaddingLeft] = useState(0);
 
   const paddingLeftHandle = useCallback(
     (value: number) => setPaddingLeft(value),
@@ -1203,24 +1226,45 @@ export default function CategorySelector() {
                     </div>
                   </FormLayout.Group>
 
-                  <RangeSlider
-                    output
-                    label="CTA card border radius"
-                    min={0}
-                    max={360}
-                    value={ctaBorderRadius}
-                    onChange={handleRangeSliderChange}
-                    suffix={
-                      <p
-                        style={{
-                          minWidth: "24px",
-                          textAlign: "right",
-                        }}
-                      >
-                        {ctaBorderRadius}px
-                      </p>
-                    }
-                  />
+                  <FormLayout.Group>
+                    <RangeSlider
+                      output
+                      label="CTA card border Size"
+                      min={0}
+                      max={360}
+                      value={ctaBorderBorderSize}
+                      onChange={ctaBorderBorderSizeHandle}
+                      suffix={
+                        <p
+                          style={{
+                            minWidth: "24px",
+                            textAlign: "right",
+                          }}
+                        >
+                          {ctaBorderBorderSize}px
+                        </p>
+                      }
+                    />
+
+                    <RangeSlider
+                      output
+                      label="CTA card border radius"
+                      min={0}
+                      max={360}
+                      value={ctaBorderRadius}
+                      onChange={handleRangeSliderChange}
+                      suffix={
+                        <p
+                          style={{
+                            minWidth: "24px",
+                            textAlign: "right",
+                          }}
+                        >
+                          {ctaBorderRadius}px
+                        </p>
+                      }
+                    />
+                  </FormLayout.Group>
                 </FormLayout>
               </div>
 
@@ -1324,6 +1368,24 @@ export default function CategorySelector() {
                       max={360}
                       value={prdTitleSize}
                       onChange={prdTitleSizeHandle}
+                      suffix={
+                        <p
+                          style={{
+                            minWidth: "24px",
+                            textAlign: "right",
+                          }}
+                        >
+                          {prdTitleSize}px
+                        </p>
+                      }
+                    />
+                    <RangeSlider
+                      output
+                      label="Product Border Size"
+                      min={0}
+                      max={360}
+                      value={prdTBorderSize}
+                      onChange={prdTBorderSizeHandle}
                       suffix={
                         <p
                           style={{
@@ -1902,6 +1964,16 @@ export default function CategorySelector() {
               <input type="hidden" name="paddingRight" value={paddingRight} />
               <input type="hidden" name="existingId" value={String(itemId)} />
               <input type="hidden" name="prdTitleSize" value={prdTitleSize} />
+              <input
+                type="hidden"
+                name="prdTBorderSize"
+                value={prdTBorderSize}
+              />
+              <input
+                type="hidden"
+                name="ctaBorderBorderSize"
+                value={ctaBorderBorderSize}
+              />
               {editData && (
                 <input
                   type="hidden"

@@ -5,11 +5,16 @@
 
 
 <input type="hidden" id="blogId" value="{{ blog.id }}" />
+<input type="hidden" id="articleId" value="{{ article.id }}" />
+<input type="hidden" id="collectionId" value="{{ article.metafields.custom.collection }}" />
+
+
+{{ article.metafields.custom.collection }}
 
 
 
 <script src="{{ 'jquery.min.js' | asset_url }}" defer></script>
-{% comment %} <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" defer></script> {% endcomment %}
+{% comment %} <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" defer></> {% endcomment %}
 {% comment %} <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js" defer></script> {% endcomment %}
 <script src="{{ 'jquery-plugin-collection.js' | asset_url }}" defer></script>
 <script src="{{ 'script.js' | asset_url }}" defer></script>

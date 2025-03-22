@@ -106,12 +106,13 @@ body {
   overflow: hidden;
   transition: all 0.4s;
   z-index: 1;
+  height: 180px;
 }
 .product-wrap .product-item .product-img img {
   max-width: 100%;
   transition: all 0.3s;
   transform: scale(1);
-  height: 180px;
+  height: 182px;
   object-fit: cover;
 }
 .product-wrap .product-item .product-img .offer-thumb {
@@ -137,6 +138,7 @@ body {
 
   text-align: center;
   line-height: 14px;
+  padding-bottom: 13px;
 }
 .product-wrap .product-item .product-text h2 a {
   font-size: 13px;
