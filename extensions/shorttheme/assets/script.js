@@ -75,9 +75,9 @@ function initializeOwlCarousel() {
 async function showData(paragraphClass, position, apiUrl) {
   const blogId = document.getElementById("blogId").value;
   const gid = document.getElementById("collectionId").value;
-  const collectionId = gid.split("/").pop();
+  let collectionId = gid.split("/").pop();
 
-  console.log("Collection ID:", collectionId);
+  console.log("Collection ID:", collectionId, blogId);
 
   console.log("Blog ID:", blogId);
   let mergedData = [];
@@ -127,14 +127,19 @@ async function showData(paragraphClass, position, apiUrl) {
       ...new Set(mergedData.map((item) => item?.categoryId)),
     ];
 
+    console.log("Category IDs:", categoryIds);
     let categoryProducts = {};
     for (let categoryId of categoryIds) {
-      if (!categoryId) continue;
+      // if (!categoryId) continue;
 
+      console.log(
+        "Fetching Category Products for ID:",
+        categoryId == null ? collectionId : categoryId,
+      );
       try {
         const categoryResponse = await fetch(`${apiUrl}/categoryById`, {
           method: "POST",
-          body: JSON.stringify({ id: categoryId }),
+          body: JSON.stringify({ id: categoryId ? categoryId : collectionId }),
         });
 
         if (categoryResponse.ok) {

@@ -1,7 +1,7 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
 client_id = "fc69044270e65a6f15dfefb9fca0a4e6"
-application_url = "https://displays-reconstruction-georgia-anna.trycloudflare.com"
+application_url = "https://digit-coal-shoppers-clock.trycloudflare.com"
 embedded = true
 name = "marketing-cta"
 handle = "marketing-cta"
@@ -27,9 +27,9 @@ scopes = "write_products"
 
 [auth]
 redirect_urls = [
-  "https://displays-reconstruction-georgia-anna.trycloudflare.com/auth/callback",
-  "https://displays-reconstruction-georgia-anna.trycloudflare.com/auth/shopify/callback",
-  "https://displays-reconstruction-georgia-anna.trycloudflare.com/api/auth/callback"
+  "https://digit-coal-shoppers-clock.trycloudflare.com/auth/callback",
+  "https://digit-coal-shoppers-clock.trycloudflare.com/auth/shopify/callback",
+  "https://digit-coal-shoppers-clock.trycloudflare.com/api/auth/callback"
 ]
 
 [pos]
