@@ -4,6 +4,7 @@ import {
   useFetcher,
   useSearchParams,
   useNavigate,
+  Link as LinkTo,
 } from "@remix-run/react";
 import {
   Autocomplete,
@@ -22,6 +23,7 @@ import {
   ColorPicker,
   hsbToHex,
   RangeSlider,
+  Link,
 } from "@shopify/polaris";
 import { ActionFunction, json, redirect } from "@remix-run/node";
 import { toast } from "react-toastify";
@@ -2040,8 +2042,14 @@ export default function CategorySelector() {
                   display: "flex",
                   justifyContent: "center",
                   marginTop: "40px",
+                  gap: "20px",
                 }}
               >
+                <LinkTo to="/app">
+                  <Button size="large" variant="primary">
+                    Back To Home
+                  </Button>
+                </LinkTo>
                 <Button size="large" submit>
                   Save
                 </Button>

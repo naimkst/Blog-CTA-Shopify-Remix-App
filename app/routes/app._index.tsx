@@ -57,6 +57,42 @@ export const action = async ({ request }: any) => {
       throw new Error("Could not approve the review.");
     }
   }
+  if (request.method == "PUT") {
+    try {
+      const updatedReview = await prisma.marketing.update({
+        where: { id: body.get("id") },
+        data: {
+          status: "0",
+        },
+      });
+
+      const response = json({
+        message: "Review is Rejected",
+      });
+      return await cors(request, response);
+    } catch (error) {
+      console.error("Error updating review:", error);
+      throw new Error("Could not approve the review.");
+    }
+  }
+  if (request.method == "PATCH") {
+    try {
+      const updatedReview = await prisma.marketing.update({
+        where: { id: body.get("id") },
+        data: {
+          status: "2",
+        },
+      });
+
+      const response = json({
+        message: "Review is Approved",
+      });
+      return await cors(request, response);
+    } catch (error) {
+      console.error("Error updating review:", error);
+      throw new Error("Could not approve the review.");
+    }
+  }
 };
 export default function Index() {
   const { reviews } = useLoaderData<typeof loader>();
@@ -199,7 +235,7 @@ export default function Index() {
                     </button>
                   </Form>
 
-                  <Form method="PATCH">
+                  <Form method="GET">
                     <input type="hidden" name="id" value={item?.id} />
                     <button
                       type="submit"
