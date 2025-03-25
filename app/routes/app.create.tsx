@@ -88,6 +88,7 @@ export let action: ActionFunction = async ({ request }: any) => {
     const sliderHoverIconColor = formData.get("sliderHoverIconColor") || "";
     const ctaBorderBorderSize = formData.get("ctaBorderBorderSize") || "";
     const prdTBorderSize = formData.get("prdTBorderSize") || "";
+    const buttonBorderRadius = formData.get("buttonBorderRadius") || "";
 
     // Validate required fields
     if (!headline || !name || !position || !layout) {
@@ -137,6 +138,7 @@ export let action: ActionFunction = async ({ request }: any) => {
         productLimit,
         customOptions: {
           sliderHoverBgColor,
+          buttonBorderRadius,
           prdTBorderSize,
           ctaBorderBorderSize,
           sliderHoverIconColor,
@@ -192,6 +194,7 @@ export let action: ActionFunction = async ({ request }: any) => {
         customOptions: {
           sliderHoverBgColor,
           prdTBorderSize,
+          buttonBorderRadius,
           sliderHoverIconColor,
           ctaBorderBorderSize,
           headingTextColor,
@@ -347,6 +350,11 @@ export default function CategorySelector() {
       .then((res) => res.json())
       .then((data) => {
         console.log("data", data?.items);
+
+        console.log(
+          "data?.items?.customOptions?.buttonBorderRadius ============",
+          data?.items?.customOptions?.buttonBorderRadius,
+        );
         setEditData(data?.items);
         if (data?.items) {
           setHeadline(data?.items?.headline);
@@ -416,7 +424,7 @@ export default function CategorySelector() {
           );
           setPrdTitleSize(data?.items?.customOptions?.prdTitleSize);
           setSliderHoverBgColor(
-            hexToHsb(data?.items?.customOptions?.setSliderHoverBgColor),
+            hexToHsb(data?.items?.customOptions?.sliderHoverBgColor),
           );
           setSliderHoverIconColor(
             hexToHsb(data?.items?.customOptions?.sliderHoverIconColor),
@@ -425,6 +433,7 @@ export default function CategorySelector() {
             data?.items?.customOptions?.ctaBorderBorderSize,
           );
           setPrdTBorderSize(data?.items?.customOptions?.prdTBorderSize);
+          setButtonBorderRadius(data?.items?.customOptions?.buttonBorderRadius);
         }
       });
   };
@@ -732,6 +741,13 @@ export default function CategorySelector() {
 
   const buttonTextSizeHandle = useCallback(
     (value: number) => setbuttonTextSize(value),
+    [],
+  );
+
+  const [buttonBorderRadius, setButtonBorderRadius] = useState(0);
+
+  const buttonBorderRadiusHandle = useCallback(
+    (value: number) => setButtonBorderRadius(value),
     [],
   );
 
@@ -1151,27 +1167,6 @@ export default function CategorySelector() {
                           />
                         </label>
                       </div>
-                      <TextField
-                        label="Button Text"
-                        onChange={(value) => {
-                          setButtonText(value);
-                        }}
-                        name="buttonText"
-                        value={buttonText}
-                        placeholder="Enter the button text"
-                        autoComplete="off"
-                      />
-
-                      <TextField
-                        label="Button Link"
-                        onChange={(value) => {
-                          setButtonLink(value);
-                        }}
-                        name="buttonLink"
-                        value={buttonLink}
-                        placeholder="Enter the button Link"
-                        autoComplete="off"
-                      />
                     </div>
                   )}
                 </FormLayout>
@@ -1393,7 +1388,7 @@ export default function CategorySelector() {
                             textAlign: "right",
                           }}
                         >
-                          {prdTitleSize}px
+                          {prdTBorderSize}px
                         </p>
                       }
                     />
@@ -1475,24 +1470,45 @@ export default function CategorySelector() {
                     </div>
                   </FormLayout.Group>
 
-                  <RangeSlider
-                    output
-                    label="Button Text Size"
-                    min={0}
-                    max={360}
-                    value={buttonTextSize}
-                    onChange={buttonTextSizeHandle}
-                    suffix={
-                      <p
-                        style={{
-                          minWidth: "24px",
-                          textAlign: "right",
-                        }}
-                      >
-                        {buttonTextSize}px
-                      </p>
-                    }
-                  />
+                  <FormLayout.Group>
+                    <RangeSlider
+                      output
+                      label="Button Text Size"
+                      min={0}
+                      max={360}
+                      value={buttonTextSize}
+                      onChange={buttonTextSizeHandle}
+                      suffix={
+                        <p
+                          style={{
+                            minWidth: "24px",
+                            textAlign: "right",
+                          }}
+                        >
+                          {buttonTextSize}px
+                        </p>
+                      }
+                    />
+
+                    <RangeSlider
+                      output
+                      label="Button Border Radius"
+                      min={0}
+                      max={360}
+                      value={buttonBorderRadius}
+                      onChange={buttonBorderRadiusHandle}
+                      suffix={
+                        <p
+                          style={{
+                            minWidth: "24px",
+                            textAlign: "right",
+                          }}
+                        >
+                          {buttonBorderRadius}px
+                        </p>
+                      }
+                    />
+                  </FormLayout.Group>
                 </FormLayout>
               </div>
 
@@ -1914,6 +1930,38 @@ export default function CategorySelector() {
                 </FormLayout>
               </div>
 
+              {/* selected === 5 ? { display: "block" } : { display: "none" } */}
+              <div
+                style={{
+                  display: `${selected === 0 ? "flex" : "none"}`,
+                  flexDirection: "column",
+                  gap: 20,
+                  marginTop: 20,
+                }}
+              >
+                <TextField
+                  label="Button Text"
+                  onChange={(value) => {
+                    setButtonText(value);
+                  }}
+                  name="buttonText"
+                  value={buttonText}
+                  placeholder="Enter the button text"
+                  autoComplete="off"
+                />
+
+                <TextField
+                  label="Button Link"
+                  onChange={(value) => {
+                    setButtonLink(value);
+                  }}
+                  name="buttonLink"
+                  value={buttonLink}
+                  placeholder="Enter the button Link"
+                  autoComplete="off"
+                />
+              </div>
+
               <input type="hidden" name="productHandle" value={producthandle} />
               <input type="hidden" name="categoryId" value={selectedCategory} />
               <input type="hidden" name="blogId" value={selectBlog} />
@@ -1964,6 +2012,11 @@ export default function CategorySelector() {
               <input type="hidden" name="paddingRight" value={paddingRight} />
               <input type="hidden" name="existingId" value={String(itemId)} />
               <input type="hidden" name="prdTitleSize" value={prdTitleSize} />
+              <input
+                type="hidden"
+                name="buttonBorderRadius"
+                value={buttonBorderRadius}
+              />
               <input
                 type="hidden"
                 name="prdTBorderSize"

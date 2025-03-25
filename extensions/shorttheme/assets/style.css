@@ -109,7 +109,7 @@ body {
   height: 180px;
 }
 .product-wrap .product-item .product-img img {
-  max-width: 100%;
+  width: 100%;
   transition: all 0.3s;
   transform: scale(1);
   height: 182px;
@@ -316,3 +316,11 @@ body {
     text-align: right;
   }
 } /*# sourceMappingURL=style.css.map */
+.sliderButton {
+  text-align: center;
+  padding: 30px 0px;
+}
+.sliderButton a.btn {
+  padding: 10px 20px;
+  text-decoration: none;
+}

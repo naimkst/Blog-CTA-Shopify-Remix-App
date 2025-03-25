@@ -189,6 +189,9 @@ async function showData(paragraphClass, position, apiUrl) {
           .product-area .product-wrap .owl-nav button:hover span {
               color: ${item?.customOptions?.sliderHoverIconColor} !important;
           }
+          .sliderButton a.btn:hover {
+            background-color: ${item?.customOptions?.buttonHoverColor} !important;
+          }
         </style>
             <div class="my-container-fluid">
               <div class="section-title">
@@ -215,6 +218,10 @@ async function showData(paragraphClass, position, apiUrl) {
                     `,
                     )
                     .join("")}
+                </div>
+
+                <div class="sliderButton">
+                    <a href="${item?.buttonLink ? item?.buttonLink : `/collections/${item?.productHandle}`}" class="btn" style="background-color: ${item?.customOptions?.buttonBackgroundColor}; color: ${item?.customOptions?.buttonTextColor}; border-radius: ${item?.customOptions?.buttonBorderRadius}px; font-size: ${item?.customOptions?.buttonTextSize}px;">${item?.buttonText}</a>
                 </div>
               </div>
             </div>
