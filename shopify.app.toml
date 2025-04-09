@@ -1,25 +1,16 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
-client_id = "fc69044270e65a6f15dfefb9fca0a4e6"
-application_url = "https://digit-coal-shoppers-clock.trycloudflare.com"
+client_id = "e5f190893fec9df1ff978dffafc52c2f"
+application_url = "https://blogcta.orustudio.com/"
 embedded = true
-name = "marketing-cta"
-handle = "marketing-cta"
+name = "cafeplanta-cta"
+handle = "cafeplanta-cta"
 
 [build]
 include_config_on_deploy = true
-automatically_update_urls_on_dev = true
 
 [webhooks]
-api_version = "2025-01"
-
-  [[webhooks.subscriptions]]
-  topics = [ "app/uninstalled" ]
-  uri = "/webhooks/app/uninstalled"
-
-  [[webhooks.subscriptions]]
-  topics = [ "app/scopes_update" ]
-  uri = "/webhooks/app/scopes_update"
+api_version = "2025-04"
 
 [access_scopes]
 # Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
@@ -27,9 +18,9 @@ scopes = "write_products"
 
 [auth]
 redirect_urls = [
-  "https://digit-coal-shoppers-clock.trycloudflare.com/auth/callback",
-  "https://digit-coal-shoppers-clock.trycloudflare.com/auth/shopify/callback",
-  "https://digit-coal-shoppers-clock.trycloudflare.com/api/auth/callback"
+  "https://blogcta.orustudio.com/auth/callback",
+  "https://blogcta.orustudio.com/auth/shopify/callback",
+  "https://blogcta.orustudio.com/api/auth/callback"
 ]
 
 [pos]

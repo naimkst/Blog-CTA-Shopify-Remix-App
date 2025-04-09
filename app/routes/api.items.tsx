@@ -8,6 +8,9 @@ export const loader = async ({ request }: any) => {
     orderBy: {
       createdAt: "desc",
     },
+    where: {
+      status: "2",
+    },
   });
   // return { reviews };
   const response = json({

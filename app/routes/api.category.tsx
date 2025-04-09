@@ -1,8 +1,8 @@
 import { json } from "@remix-run/node";
 
 export const loader = async ({ request }: any) => {
-  const shop = "app-development-qa.myshopify.com";
-  const accessToken = "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";
+  const shop = process.env.SHOPIFY_STORE_NAME;
+  const accessToken = process.env.SHOPIFY_ADMIN_ACCESS_TOKEN;
 
   try {
     // Fetch collections (categories) from Shopify

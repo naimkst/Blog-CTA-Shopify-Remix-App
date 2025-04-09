@@ -6,8 +6,8 @@ export const action = async ({ request }: any) => {
     return json({ error: "Method not allowed" }, { status: 405 });
   }
 
-  const shop = "app-development-qa.myshopify.com";
-  const accessToken = "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";
+  const shop = process.env.SHOPIFY_STORE_NAME;
+  const accessToken = process.env.SHOPIFY_ADMIN_ACCESS_TOKEN;
 
   try {
     const body = await request.json();

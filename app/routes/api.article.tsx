@@ -1,8 +1,8 @@
 import { ActionFunction, json } from "@remix-run/node";
 
 export const action: ActionFunction = async ({ request }) => {
-  const shop = "app-development-qa.myshopify.com";
-  const accessToken = "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";
+  const shop = process.env.SHOPIFY_STORE_NAME;
+  const accessToken = process.env.SHOPIFY_ADMIN_ACCESS_TOKEN;
 
   const body = await request.json();
   const { blogId } = body;
