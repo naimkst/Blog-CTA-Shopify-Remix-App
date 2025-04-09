@@ -33,6 +33,7 @@ import { authenticate } from "app/shopify.server";
 import path from "path";
 import { Buffer } from "buffer";
 import { writeFile } from "fs/promises";
+import { prisma } from "app/db.server";
 
 export let action: ActionFunction = async ({ request }: any) => {
   const data = await authenticate.admin(request);

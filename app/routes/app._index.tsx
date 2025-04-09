@@ -11,7 +11,7 @@ import {
   LegacyCard,
   EmptyState,
 } from "@shopify/polaris";
-import { prisma } from "../db.server";
+import { prisma } from "app/db.server";
 import { Form, useLoaderData } from "@remix-run/react";
 import {
   CheckCircleIcon,
