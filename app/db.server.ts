@@ -1,5 +1,3 @@
-// app/utils/prisma.server.ts (or any suitable location)
-
 import { PrismaClient } from "@prisma/client";
 
 let prisma: PrismaClient;
