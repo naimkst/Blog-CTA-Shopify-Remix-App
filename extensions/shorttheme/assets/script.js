@@ -287,4 +287,4 @@ async function showData(paragraphClass, position, apiUrl) {
 }
 
 // Example: Insert HTML after 8 sentences
-showData("post-description", 8, "https://blogcta.orustudio.com/api");
+showData("article-template__content", 8, "https://blogcta.orustudio.com/api");
