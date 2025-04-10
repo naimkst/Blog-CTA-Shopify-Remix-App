@@ -460,7 +460,7 @@ export default function CategorySelector() {
     fetch("/api/category")
       .then((res) => res.json())
       .then((data) => {
-        setProducts(data?.collections?.custom_collections || []);
+        setProducts(data?.collections?.smart_collections || []);
       });
 
     fetch("/api/blogs")

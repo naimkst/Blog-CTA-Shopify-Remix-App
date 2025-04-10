@@ -7,7 +7,7 @@ export const loader = async ({ request }: any) => {
   try {
     // Fetch collections (categories) from Shopify
     const response = await fetch(
-      `https://${shop}/admin/api/2025-01/custom_collections.json`,
+      `https://${shop}/admin/api/2025-01/smart_collections.json`,
       {
         headers: {
           "X-Shopify-Access-Token": accessToken,
